@@ -1,12 +1,13 @@
-<!doctype html>
-<html datat-theme="dracula">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilotes</title>
   <link href="/src/style.css" rel="stylesheet">
 </head>
 <body>
-  <header>
+    <header>
     <div class="navbar bg-base-100 shadow-sm">
   <div class="navbar-start">
     <div class="dropdown">
@@ -17,7 +18,6 @@
         tabindex="0"
         class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
         <li><a href="./pages/pilotes.html">Pilotes</a></li>
-        <li><a href="./pages/circuit.html">Circuits</a></li>
         <li>
           <a>Parent</a>
           <ul class="p-2">
@@ -28,12 +28,11 @@
         <li><a>Item 3</a></li>
       </ul>
     </div>
-    <img src="./src/img/F1_logo.png" alt="" class="h-10 mr-2">
+    <img src="../src/img/F1_logo.png" alt="" class="h-10 mr-2">
   </div>
   <div class="navbar-end hidden lg:flex">
     <ul class="menu menu-horizontal px-1">
       <li><a href="./pages/pilotes.html">Pilotes</a></li>
-      <li><a href="./pages/circuit.html">Circuits</a></li>
       <li>
         <details>
           <summary>Parent</summary>
@@ -48,6 +47,11 @@
   </div>
 </div>
   </header>
-  <h1 class="underline text-bold content-center">Bienvenue</h1>
+    <h1 class="text-center font-bold text-2xl/7 mt-3 mb-5">Pilotes</h1>
+    <div id="drivers-card" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+
+  
+</div>
+<script src="/src/driverList.js"></script>
 </body>
 </html>

@@ -1,0 +1,6 @@
+vercel
+netify
+
+avec github action
+
+backend for frontend
