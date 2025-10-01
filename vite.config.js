@@ -3,7 +3,6 @@ import { resolve } from 'path'
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  root: '.', // racine du projet
   build: {
     rollupOptions: {
       input: {
@@ -12,7 +11,6 @@ export default defineConfig({
         pilotes: resolve(__dirname, 'src/pages/pilotes.html'),
         driverStanding: resolve(__dirname, 'src/pages/driverStanding.html')
       }
-    },
-    outDir: 'dist'
+    }
   }
 })
