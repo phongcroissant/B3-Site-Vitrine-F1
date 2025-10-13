@@ -1,4 +1,4 @@
-const fetchDrivers = async () => {
+const fetchCircuit = async () => {
     try {
         const reponse = await fetch('https://api.openf1.org/v1/meetings?year=2024')
         const drivers = await reponse.json()
@@ -21,4 +21,4 @@ const fetchDrivers = async () => {
     }
 }
 
-fetchDrivers()
+fetchCircuit()
