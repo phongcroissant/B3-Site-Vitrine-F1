@@ -2,6 +2,7 @@ const fetchDrivers = async () => {
     try {
         const reponse = await fetch('https://api.openf1.org/v1/drivers?session_key=latest')
         const drivers = await reponse.json()
+        drivers.sort((a,b) => a.team_name.localeCompare(b.team_name))
         const cardDrivers=document.querySelector("#drivers-card")
         cardDrivers.innerHTML = drivers
             .map(driver => `
