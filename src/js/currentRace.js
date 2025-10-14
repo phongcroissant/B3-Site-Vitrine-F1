@@ -4,9 +4,10 @@ const fetchCurrentRace = async () => {
     const lastRaceResult = await reponse.json()
     console.log(lastRaceResult)
     const lastRaceStanding = document.querySelector("#table-body")
+    const titleLastRace = document.querySelector('#title-last-race')
+    titleLastRace.innerHTML=lastRaceResult.MRData.RaceTable.Races.map(titleRace=>`${titleRace.raceName}`)
     lastRaceStanding.innerHTML = lastRaceResult.MRData.RaceTable.Races[0].Results
       .map(raceStanding => `
-        <h1></h1>
         <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold">
               <span class="inline-flex items-center gap-2">
                 <span class="inline-flex h-7 w-7 items-center justify-center text-sm font-bold text-black">${raceStanding.position}</span>
