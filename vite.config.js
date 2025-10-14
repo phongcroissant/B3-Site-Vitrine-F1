@@ -13,7 +13,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        circuit: resolve(__dirname, 'src/pages/circuit.html'),
+        races: resolve(__dirname, 'src/pages/races.html'),
         pilotes: resolve(__dirname, 'src/pages/pilotes.html'),
         driverStanding: resolve(__dirname, 'src/pages/driverStanding.html'),
         constructorStanding: resolve(__dirname,'src/pages/constructorStanding.html')
