@@ -7,11 +7,11 @@ const fetchDrivers = async () => {
     cardDrivers.innerHTML = drivers
       .map(driver => `
     <div class="card w-96 bg-base-100 shadow-xl mx-auto">
-      <figure><img src="${driver.headshot_url}" alt="${driver.name_acronym}" /></figure>
+      <figure><img src="${driver.headshot_url}" alt="${driver.name_acronym}"></figure>
       <div class="card-body">
         <h2 class="card-title">${driver.full_name}</h2>
         <p>Écurie : ${driver.team_name}</p>
-        <p>Numéro : ${driver.driver_number}</p>
+        <p>Numéro : ${driver.driver_number}</p> 
       </div>
     </div>
 `)
