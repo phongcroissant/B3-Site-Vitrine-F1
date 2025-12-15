@@ -12,13 +12,13 @@ export default function Header() {
         Accueil
       </NavLink>
       <NavLink
-        to="/contact"
+        to="/driverList"
         className={({ isActive }) =>
           `${isActive && "bg-amber-400"} mx-2 text-md text-semibold`
         }
         state={{ txt: "State test" }}
       >
-        Contact
+        Pilotes
       </NavLink>
       <NavLink
         to="/analytics"
