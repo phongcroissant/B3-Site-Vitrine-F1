@@ -33,4 +33,4 @@ const fetchCurrentRace = async () => {
   }
 }
 
-fetchCurrentRace()
+// fetchCurrentRace()
