@@ -21,12 +21,12 @@ export default function Header() {
         Pilotes
       </NavLink>
       <NavLink
-        to="/analytics"
+        to="/standings"
         className={({ isActive }) =>
           `${isActive && "bg-amber-400"} mx-2 text-md text-semibold`
         }
       >
-        Analytics
+        Classement
       </NavLink>
     </nav>
   );
