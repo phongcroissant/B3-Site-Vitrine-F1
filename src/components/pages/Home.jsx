@@ -17,9 +17,12 @@ export default function Home() {
         setAPIState({
           loading: false,
           error: false,
-          data: data.MRData.RaceTable.Races[0].Results,
+          data: {
+            result: data.MRData.RaceTable.Races[0].Results,
+            raceName: data.MRData.RaceTable.Races[0].raceName,
+          },
         });
-        console.log(data.MRData.RaceTable.Races[0].Results);
+        console.log(data);
       })
       .catch(() => {
         setAPIState({ loading: false, error: true, data: undefined });
@@ -28,7 +31,7 @@ export default function Home() {
   let content;
   if (APIState.loading) content = <p>Loading...</p>;
   else if (APIState.error) content = <p>Une erreur est survenue</p>;
-  else if (APIState.data?.length > 0) {
+  else if (APIState.data.result?.length > 0) {
     content = (
       // <ul>
       //   {APIState.data.map((result) => (
@@ -41,7 +44,7 @@ export default function Home() {
       // </ul>
       <div className="max-w-4xl mx-auto mt-10 px-4">
         <h2 className="text-2xl font-bold mb-6 text-center">
-          Classement dernière course
+          Dernier GP : {APIState.data.raceName}
         </h2>
         <div className="overflow-x-auto">
           <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
@@ -62,17 +65,19 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              {APIState.data.map((r, index) => (
+              {APIState.data.result.map((result, index) => (
                 <tr
-                  key={r.Driver.driverId}
+                  key={result.Driver.driverId}
                   className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
                 >
-                  <td className="py-3 px-4 text-black">{r.position}</td>
+                  <td className="py-3 px-4 text-black">{result.position}</td>
                   <td className="py-3 px-4 text-black">
-                    {r.Driver.givenName} {r.Driver.familyName}
+                    {result.Driver.givenName} {result.Driver.familyName}
                   </td>
-                  <td className="py-3 px-4 text-black">{r.Constructor.name}</td>
-                  <td className="py-3 px-4 text-black">{r.points}</td>
+                  <td className="py-3 px-4 text-black">
+                    {result.Constructor.name}
+                  </td>
+                  <td className="py-3 px-4 text-black">{result.points}</td>
                 </tr>
               ))}
             </tbody>
