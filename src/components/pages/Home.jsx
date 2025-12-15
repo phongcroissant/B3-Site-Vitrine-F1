@@ -33,15 +33,6 @@ export default function Home() {
   else if (APIState.error) content = <p>Une erreur est survenue</p>;
   else if (APIState.data.result?.length > 0) {
     content = (
-      // <ul>
-      //   {APIState.data.map((result) => (
-      //     <li key={result.number}>
-      //       <span>{result.position}</span>
-      //       <span>{result.Driver.givenName}</span>
-      //       <span>{result.points} points</span>
-      //     </li>
-      //   ))}
-      // </ul>
       <div className="max-w-4xl mx-auto mt-10 px-4">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Dernier GP : {APIState.data.raceName}
