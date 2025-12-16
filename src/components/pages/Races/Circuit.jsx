@@ -15,7 +15,6 @@ export default function Circuit() {
         return res.json();
       })
       .then((data) => {
-        // data.sort((a, b) => a.team_name.localeCompare(b.team_name));
         setAPIState({
           loading: false,
           error: false,
@@ -39,7 +38,7 @@ export default function Circuit() {
               <h2 className="card-title">{race.raceName}</h2>
               <p>Pays : {race.Circuit.Location.country}</p>
               <p>Localisation : {race.Circuit.Location.locality}</p>
-              <Link to={`/raceResult/${race.Circuit.circuitId}`}>Resultat</Link>
+              <Link to={`/raceResult/${race.round}`}>Resultat</Link>
             </div>
           </div>
         ))}
