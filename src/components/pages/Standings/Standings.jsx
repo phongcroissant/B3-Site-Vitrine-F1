@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, NavLink } from "react-router-dom";
 
 import DriversStanding from "./DriversStanding";
 import ConstructorsStanding from "./ConstructorsStanding";
@@ -8,12 +8,23 @@ export default function Standings() {
     <div>
       <h1 className="text-center p-5 font-bold text-3xl">Classement</h1>
       <nav className="text-center">
-        <Link to="driversStanding" className="mx-2">
+        <NavLink
+          to="."
+          end
+          className={({ isActive }) =>
+            `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
+          }
+        >
           Pilotes
-        </Link>
-        <Link to="constructorsStanding" className="mx-2">
+        </NavLink>
+        <NavLink
+          to="constructorsStanding"
+          className={({ isActive }) =>
+            `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
+          }
+        >
           Constructeurs
-        </Link>
+        </NavLink>
       </nav>
       <Outlet />
     </div>

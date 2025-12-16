@@ -6,7 +6,7 @@ export default function Header() {
       <NavLink
         to="/"
         className={({ isActive }) =>
-          `${isActive && "bg-amber-400"} mx-2 text-md text-semibold`
+          `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
         }
       >
         Accueil
@@ -14,7 +14,7 @@ export default function Header() {
       <NavLink
         to="/driverList"
         className={({ isActive }) =>
-          `${isActive && "bg-amber-400"} mx-2 text-md text-semibold`
+          `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
         }
         state={{ txt: "State test" }}
       >
@@ -23,7 +23,7 @@ export default function Header() {
       <NavLink
         to="/standings"
         className={({ isActive }) =>
-          `${isActive && "bg-amber-400"} mx-2 text-md text-semibold`
+          `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
         }
       >
         Classement
