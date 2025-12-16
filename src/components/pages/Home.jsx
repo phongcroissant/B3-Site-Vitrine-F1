@@ -22,7 +22,6 @@ export default function Home() {
             raceName: data.MRData.RaceTable.Races[0].raceName,
           },
         });
-        console.log(data);
       })
       .catch(() => {
         setAPIState({ loading: false, error: true, data: undefined });

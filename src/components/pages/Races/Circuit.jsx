@@ -20,7 +20,6 @@ export default function Circuit() {
           error: false,
           data: data.MRData.RaceTable.Races,
         });
-        console.log(data.MRData.RaceTable.Races);
       })
       .catch(() => {
         setAPIState({ loading: false, error: true, data: undefined });

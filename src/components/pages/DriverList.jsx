@@ -20,7 +20,6 @@ export default function DriverList() {
           error: false,
           data: data,
         });
-        console.log(data);
       })
       .catch(() => {
         setAPIState({ loading: false, error: true, data: undefined });

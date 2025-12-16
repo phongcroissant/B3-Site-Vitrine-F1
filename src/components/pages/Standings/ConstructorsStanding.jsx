@@ -20,9 +20,6 @@ export default function ConstructorsStanding() {
           data: data.MRData.StandingsTable.StandingsLists[0]
             .ConstructorStandings,
         });
-        console.log(
-          data.MRData.StandingsTable.StandingsLists[0].ConstructorStandings
-        );
       })
       .catch(() => {
         setAPIState({ loading: false, error: true, data: undefined });

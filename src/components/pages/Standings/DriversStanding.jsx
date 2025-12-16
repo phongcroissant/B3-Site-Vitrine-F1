@@ -19,9 +19,6 @@ export default function DriversStanding() {
           error: false,
           data: data.MRData.StandingsTable.StandingsLists[0].DriverStandings,
         });
-        console.log(
-          data.MRData.StandingsTable.StandingsLists[0].DriverStandings
-        );
       })
       .catch(() => {
         setAPIState({ loading: false, error: true, data: undefined });

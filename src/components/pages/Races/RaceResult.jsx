@@ -25,7 +25,6 @@ export default function RaceResult() {
             raceName: data.MRData.RaceTable.Races[0].raceName,
           },
         });
-        console.log(data.MRData.RaceTable.Races[0].Results);
       })
       .catch(() => {
         setAPIState({ loading: false, error: true, data: undefined });
