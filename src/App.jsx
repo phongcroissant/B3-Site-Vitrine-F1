@@ -5,6 +5,7 @@ import DriverList from "./components/pages/DriverList";
 import Standings from "./components/pages/Standings/Standings";
 import DriversStanding from "./components/pages/Standings/DriversStanding";
 import ConstructorsStanding from "./components/pages/Standings/ConstructorsStanding";
+import Circuit from "./components/pages/Races/Circuit";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/driverList" element={<DriverList />} />
+          <Route path="/circuit" element={<Circuit />} />
           <Route path="/standings" element={<Standings />}>
             <Route index element={<DriversStanding />} />
             <Route

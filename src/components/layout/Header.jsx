@@ -21,6 +21,15 @@ export default function Header() {
         Pilotes
       </NavLink>
       <NavLink
+        to="/circuit"
+        className={({ isActive }) =>
+          `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
+        }
+        state={{ txt: "State test" }}
+      >
+        Circuit
+      </NavLink>
+      <NavLink
         to="/standings"
         className={({ isActive }) =>
           `${isActive && "font-bold underline"} mx-2 text-md text-semibold`

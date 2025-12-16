@@ -12,7 +12,6 @@ const fetchRaces = async () => {
         <p>Pays : ${race.Circuit.Location.country}</p>
         <p>Localisation : ${race.Circuit.Location.locality}</p>
         <a href='/src/pages/resultatRace.html?round=${race.round}'>Resultat</a>
-
       </div>
     </div>
     `)
