@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Circuit() {
   const [APIState, setAPIState] = useState({
@@ -38,9 +39,7 @@ export default function Circuit() {
               <h2 className="card-title">{race.raceName}</h2>
               <p>Pays : {race.Circuit.Location.country}</p>
               <p>Localisation : {race.Circuit.Location.locality}</p>
-              <a href="/src/pages/resultatRace.html?round=${race.round}">
-                Resultat
-              </a>
+              <Link to={`/raceResult/${race.Circuit.circuitId}`}>Resultat</Link>
             </div>
           </div>
         ))}
