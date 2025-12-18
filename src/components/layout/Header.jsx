@@ -37,6 +37,22 @@ export default function Header() {
       >
         Classement
       </NavLink>
+      <NavLink
+        to="/shop"
+        className={({ isActive }) =>
+          `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
+        }
+      >
+        Shopping
+      </NavLink>
+      <NavLink
+        to="/shopCart"
+        className={({ isActive }) =>
+          `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
+        }
+      >
+        Panier
+      </NavLink>
     </nav>
   );
 }

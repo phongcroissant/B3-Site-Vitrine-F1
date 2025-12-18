@@ -7,6 +7,8 @@ import DriversStanding from "./components/pages/Standings/DriversStanding";
 import ConstructorsStanding from "./components/pages/Standings/ConstructorsStanding";
 import Circuit from "./components/pages/Races/Circuit";
 import RaceResult from "./components/pages/Races/RaceResult";
+import Shop from "./components/pages/Shop/Shop";
+import ShopCart from "./components/pages/Shop/ShopCart";
 
 export default function App() {
   return (
@@ -25,6 +27,8 @@ export default function App() {
               element={<ConstructorsStanding />}
             />
           </Route>
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/shopCart" element={<ShopCart />} />
         </Routes>
       </BrowserRouter>
     </>
