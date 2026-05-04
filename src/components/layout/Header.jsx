@@ -53,6 +53,14 @@ export default function Header() {
       >
         Panier
       </NavLink>
+      <NavLink
+        to="/register"
+        className={({ isActive }) =>
+          `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
+        }
+      >
+        Inscription
+      </NavLink>
     </nav>
   );
 }
