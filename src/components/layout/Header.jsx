@@ -61,6 +61,14 @@ export default function Header() {
       >
         Inscription
       </NavLink>
+      <NavLink
+        to="/login"
+        className={({ isActive }) =>
+          `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
+        }
+      >
+        Connexion
+      </NavLink>
     </nav>
   );
 }

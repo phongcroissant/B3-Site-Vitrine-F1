@@ -10,6 +10,7 @@ import RaceResult from "./components/pages/Races/RaceResult";
 import Shop from "./components/pages/Shop/Shop";
 import ShopCart from "./components/pages/Shop/ShopCart";
 import Register from "./components/pages/Register";
+import Login from "./components/pages/Login";
 
 export default function App() {
   return (
@@ -31,7 +32,7 @@ export default function App() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/shopCart" element={<ShopCart />} />
           <Route path="/register" element={<Register />} />
-
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </>
