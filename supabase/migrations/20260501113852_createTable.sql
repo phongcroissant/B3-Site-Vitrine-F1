@@ -1,4 +1,4 @@
 create table users (
-    id uuid default gen_random_uuid() primary key,
+    id serial primary key,
     username text unique not null
 );
