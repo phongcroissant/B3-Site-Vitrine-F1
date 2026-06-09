@@ -1,6 +1,27 @@
 import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "../../lib/supabase";
 
 export default function Header() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
   return (
     <nav className="p-2 text-center ">
       <NavLink
@@ -53,22 +74,33 @@ export default function Header() {
       >
         Panier
       </NavLink>
-      <NavLink
-        to="/register"
-        className={({ isActive }) =>
-          `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
-        }
-      >
-        Inscription
-      </NavLink>
-      <NavLink
-        to="/login"
-        className={({ isActive }) =>
-          `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
-        }
-      >
-        Connexion
-      </NavLink>
+      {user ? (
+        <button
+          onClick={handleLogout}
+          className="mx-2 text-md font-semibold hover:underline"
+        >
+          Déconnexion
+        </button>
+      ) : (
+        <>
+          <NavLink
+            to="/register"
+            className={({ isActive }) =>
+              `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
+            }
+          >
+            Inscription
+          </NavLink>
+          <NavLink
+            to="/login"
+            className={({ isActive }) =>
+              `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
+            }
+          >
+            Connexion
+          </NavLink>
+        </>
+      )}
     </nav>
   );
 }
