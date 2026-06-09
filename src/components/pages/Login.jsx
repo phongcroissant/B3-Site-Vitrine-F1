@@ -30,7 +30,6 @@ export default function Login() {
 
     setLoading(false)
 
-    // redirection après login
     navigate("/")
   }
 
