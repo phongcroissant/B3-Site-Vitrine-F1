@@ -30,9 +30,10 @@ export default function Register() {
     });
 
     if (error) setError(error.message);
-    else setSuccess(true); // Supabase envoie un email de confirmation
+    else setSuccess(true);
 
     setLoading(false);
+    navigate("/");
   };
 
   return (
