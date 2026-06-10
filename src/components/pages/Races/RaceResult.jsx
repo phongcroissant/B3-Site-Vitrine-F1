@@ -21,6 +21,7 @@ export default function RaceResult() {
           loading: false,
           error: false,
           data: {
+            idRace:data.MRData.RaceTable.Races[0].Circuit.circuitId,
             result: data.MRData.RaceTable.Races[0].Results,
             raceName: data.MRData.RaceTable.Races[0].raceName,
           },

@@ -23,15 +23,28 @@ export default function Register() {
 
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
 
-    const { error: insertError } = await supabase.from("users").insert({
-      username: pseudo,
-    });
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+      return;
+    }
 
-    if (error) setError(error.message);
-    else setSuccess(true);
+    if (data.user) {
+      const { error: insertError } = await supabase.from("users").insert({
+        id: data.user.id,
+        username: pseudo,
+      });
 
+      if (insertError) {
+        setError(insertError.message);
+        setLoading(false);
+        return;
+      }
+    }
+
+    setSuccess(true);
     setLoading(false);
     navigate("/");
   };
