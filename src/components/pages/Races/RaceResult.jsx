@@ -78,6 +78,7 @@ export default function RaceResult() {
             </tbody>
           </table>
         </div>
+        <CommentSection idRace={idRace} />
       </div>
     );
   } else if (APIState.data.result?.length === 0) {
