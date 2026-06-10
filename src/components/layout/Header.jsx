@@ -66,21 +66,23 @@ export default function Header() {
       >
         Shopping
       </NavLink>
-      <NavLink
-        to="/shopCart"
-        className={({ isActive }) =>
-          `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
-        }
-      >
-        Panier
-      </NavLink>
       {user ? (
-        <button
-          onClick={handleLogout}
-          className="mx-2 text-md font-semibold hover:underline"
-        >
-          Déconnexion
-        </button>
+        <>
+          <NavLink
+            to="/shopCart"
+            className={({ isActive }) =>
+              `${isActive && "font-bold underline"} mx-2 text-md text-semibold`
+            }
+          >
+            Panier
+          </NavLink>
+          <button
+            onClick={handleLogout}
+            className="mx-2 text-md font-semibold hover:underline"
+          >
+            Déconnexion
+          </button>
+        </>
       ) : (
         <>
           <NavLink
