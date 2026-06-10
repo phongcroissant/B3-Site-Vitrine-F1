@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import CommentSection from "../Comments";
 
 export default function RaceResult() {
   const round = useParams();
@@ -78,7 +79,7 @@ export default function RaceResult() {
             </tbody>
           </table>
         </div>
-        <CommentSection idRace={idRace} />
+        <CommentSection idRace={APIState.data.idRace} />
       </div>
     );
   } else if (APIState.data.result?.length === 0) {
