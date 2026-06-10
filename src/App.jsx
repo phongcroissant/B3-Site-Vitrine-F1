@@ -11,14 +11,23 @@ import Shop from "./components/pages/Shop/Shop";
 import ShopCart from "./components/pages/Shop/ShopCart";
 import Register from "./components/pages/Register";
 import Login from "./components/pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
+import NotFound from "./components/pages/NotFound";
 
 export default function App() {
   return (
     <>
       <BrowserRouter>
         <Navbar></Navbar>
+
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route element={<PublicRoute />}>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+          </Route>
+
           <Route path="/driverList" element={<DriverList />} />
           <Route path="/circuit" element={<Circuit />} />
           <Route path="/raceResult/:round" element={<RaceResult />} />
@@ -30,9 +39,12 @@ export default function App() {
             />
           </Route>
           <Route path="/shop" element={<Shop />} />
-          <Route path="/shopCart" element={<ShopCart />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/shopCart" element={<ShopCart />} />
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </>
