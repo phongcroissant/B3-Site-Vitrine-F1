@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { Link } from "react-router-dom";
 
-export default function CommentSection({ idProduit }) {
+export default function CommentSection({ idRace }) {
   const [commentaires, setCommentaires] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [user, setUser] = useState(null);
@@ -11,13 +11,13 @@ export default function CommentSection({ idProduit }) {
   useEffect(() => {
     fetchCommentaires();
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
-  }, [idProduit]);
+  }, [idRace]);
 
   const fetchCommentaires = async () => {
     const { data } = await supabase
       .from("commentaires")
       .select("*, users(username)")
-      .eq("id_produit", idProduit)
+      .eq("id_produit", idRace)
       .order("id", { ascending: false });
 
     if (data) setCommentaires(data);
@@ -31,7 +31,7 @@ export default function CommentSection({ idProduit }) {
     const { error } = await supabase.from("commentaires").insert({
       id_utilisateur: user.id,
       commentaire: newComment,
-      id_produit: idProduit,
+      id_produit: idRace,
     });
 
     if (!error) {
