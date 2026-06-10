@@ -15,9 +15,9 @@ export default function CommentSection({ idRace }) {
 
   const fetchCommentaires = async () => {
     const { data } = await supabase
-      .from("commentaires")
+      .from("comments")
       .select("*, users(username)")
-      .eq("id_produit", idRace)
+      .eq("id_course", idRace)
       .order("id", { ascending: false });
 
     if (data) setCommentaires(data);
@@ -28,7 +28,7 @@ export default function CommentSection({ idRace }) {
     if (!newComment.trim() || !user) return;
 
     setLoading(true);
-    const { error } = await supabase.from("commentaires").insert({
+    const { error } = await supabase.from("comments").insert({
       id_utilisateur: user.id,
       commentaire: newComment,
       id_produit: idRace,
