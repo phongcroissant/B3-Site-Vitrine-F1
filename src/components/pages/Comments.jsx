@@ -69,7 +69,7 @@ export default function CommentSection({ idRace }) {
       )}
 
       {commentaires.length === 0 ? (
-        <p className="text-sm text-gray-400">Aucun commentaire pour l'instant.</p>
+        <p className="text-sm text-gray-400">{"Aucun commentaire pour l'instant."}</p>
       ) : (
         <div className="flex flex-col gap-3">
           {commentaires.map((c) => (

@@ -1,4 +1,3 @@
-// src/pages/Register.jsx
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +9,7 @@ export default function Register() {
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -44,7 +43,6 @@ export default function Register() {
       }
     }
 
-    setSuccess(true);
     setLoading(false);
     navigate("/");
   };

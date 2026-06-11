@@ -1,7 +1,4 @@
-import { Link, Outlet, NavLink } from "react-router-dom";
-
-import DriversStanding from "./DriversStanding";
-import ConstructorsStanding from "./ConstructorsStanding";
+import { Outlet, NavLink } from "react-router-dom";
 
 export default function Standings() {
   return (
