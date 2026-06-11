@@ -31,7 +31,7 @@ export default function CommentSection({ idRace }) {
     const { error } = await supabase.from("comments").insert({
       id_utilisateur: user.id,
       commentaire: newComment,
-      id_produit: idRace,
+      id_course: idRace,
     });
 
     if (!error) {
