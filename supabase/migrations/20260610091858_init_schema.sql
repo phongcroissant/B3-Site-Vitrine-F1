@@ -12,7 +12,7 @@ create table comments (
     id serial primary key,
     id_utilisateur uuid not null references users(id) on delete cascade,
     commentaire text not null,
-    id_course int not null
+    id_course varchar(30) not null
 );
 
 create table cart (
