@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../context/AuthContext";
 
 const linkClass = ({ isActive }) =>
   `${isActive ? "font-bold underline" : ""} mx-2 text-md font-semibold hover:underline transition-all`;
@@ -14,22 +15,8 @@ const NAV_LINKS = [
 ];
 
 export default function Header() {
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
