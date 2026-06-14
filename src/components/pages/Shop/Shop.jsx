@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../../lib/supabase"; 
+import { supabase } from "../../../lib/supabase";
 
 export default function Shop() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [addingId, setAddingId] = useState(null); // produit en cours d'ajout
+  const [addingId, setAddingId] = useState(null);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -25,7 +25,9 @@ export default function Shop() {
   async function addToCart(productId) {
     setAddingId(productId);
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return;
 
     // 1. Récupérer ou créer le panier en cours
