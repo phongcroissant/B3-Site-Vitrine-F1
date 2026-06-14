@@ -50,6 +50,7 @@ export default function Register() {
   return (
     <form onSubmit={handleRegister}>
       {error && <p style={{ color: "red" }}>{error}</p>}
+      <label htmlFor="email">Email</label>
       <input
         type="email"
         placeholder="Email"
@@ -57,6 +58,7 @@ export default function Register() {
         onChange={(e) => setEmail(e.target.value)}
         required
       />
+      <label htmlFor="pseudo">Pseudo</label>
       <input
         type="text"
         placeholder="Pseudo"
@@ -64,6 +66,7 @@ export default function Register() {
         onChange={(e) => setPseudo(e.target.value)}
         required
       />
+      <label htmlFor="password">Mot de passe</label>
       <input
         type="password"
         placeholder="Mot de passe"
@@ -71,6 +74,7 @@ export default function Register() {
         onChange={(e) => setPassword(e.target.value)}
         required
       />
+      <label htmlFor="confirmPassword">Confirmer votre mot de passe</label>
       <input
         type="password"
         placeholder="Confirmer"
