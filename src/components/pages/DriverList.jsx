@@ -37,7 +37,11 @@ export default function DriverList() {
             className="card w-96 bg-base-100 shadow-xl mx-auto"
           >
             <figure>
-              <img src={driver.headshot_url} alt={driver.name_acronym} />
+              <img
+                src={driver.headshot_url}
+                alt={`Photo de ${driver.full_name}`}
+                loading="lazy"
+              />
             </figure>
             <div className="card-body">
               <h2 className="card-title">{driver.full_name}</h2>
