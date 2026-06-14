@@ -1,11 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import Register from "./Register";
+import Login from "./Login";
 
-const { mockNavigate, mockSignUp, mockInsert } = vi.hoisted(() => ({
+const { mockNavigate, mockSignIn } = vi.hoisted(() => ({
   mockNavigate: vi.fn(),
-  mockSignUp: vi.fn(),
-  mockInsert: vi.fn(),
+  mockSignIn: vi.fn(),
 }));
 
 vi.mock("react-router-dom", () => ({
@@ -14,53 +13,48 @@ vi.mock("react-router-dom", () => ({
 
 vi.mock("../../lib/supabase", () => ({
   supabase: {
-    auth: { signUp: mockSignUp },
-    from: () => ({ insert: mockInsert }),
+    auth: { signInWithPassword: mockSignIn },
   },
 }));
 
 function fillForm({
   email = "test@example.com",
-  pseudo = "monpseudo",
   password = "motdepasse123",
-  confirm = "motdepasse123",
 } = {}) {
   fireEvent.change(screen.getByPlaceholderText("Email"), {
     target: { value: email },
   });
-  fireEvent.change(screen.getByPlaceholderText("Pseudo"), {
-    target: { value: pseudo },
-  });
   fireEvent.change(screen.getByPlaceholderText("Mot de passe"), {
     target: { value: password },
   });
-  fireEvent.change(screen.getByPlaceholderText("Confirmer"), {
-    target: { value: confirm },
-  });
 }
 
-describe("Register", () => {
+describe("Login", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("affiche une erreur si les mots de passe ne correspondent pas", async () => {
-    render(<Register />);
-    fillForm({ confirm: "autrechose" });
+  it("affiche une erreur si les identifiants sont incorrects", async () => {
+    mockSignIn.mockResolvedValue({
+      data: {},
+      error: { message: "Identifiants invalides" },
+    });
+
+    render(<Login />);
+    fillForm();
     fireEvent.click(screen.getByRole("button"));
 
     expect(
-      await screen.findByText("Les mots de passe ne correspondent pas."),
+      await screen.findByText("Identifiants invalides"),
     ).toBeInTheDocument();
-    expect(mockSignUp).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it("redirige vers '/' après une inscription réussie", async () => {
-    mockSignUp.mockResolvedValue({
+  it("redirige vers '/' après une connexion réussie", async () => {
+    mockSignIn.mockResolvedValue({
       data: { user: { id: "uid-123" } },
       error: null,
     });
-    mockInsert.mockResolvedValue({ error: null });
 
-    render(<Register />);
+    render(<Login />);
     fillForm();
     fireEvent.click(screen.getByRole("button"));
 
