@@ -35,7 +35,7 @@ export default function Header() {
   const allLinks = [...NAV_LINKS, ...authLinks];
 
   return (
-    <nav className="p-3 border-b">
+    <nav aria-label="Navigation principale" className="p-3 border-b">
       {/* Desktop */}
       <div className="hidden md:flex justify-center items-center flex-wrap gap-1">
         {allLinks.map(({ to, label }) => (
