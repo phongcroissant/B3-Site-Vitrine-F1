@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function CommentSection({ idRace }) {
   const [commentaires, setCommentaires] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchCommentaires();
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
   }, [idRace]);
 
   const fetchCommentaires = async () => {
@@ -64,12 +64,17 @@ export default function CommentSection({ idRace }) {
         </form>
       ) : (
         <p className="text-sm text-gray-500 mb-6">
-          <Link to="/login" className="underline">Connectez-vous</Link> pour laisser un commentaire.
+          <Link to="/login" className="underline">
+            Connectez-vous
+          </Link>{" "}
+          pour laisser un commentaire.
         </p>
       )}
 
       {commentaires.length === 0 ? (
-        <p className="text-sm text-gray-400">{"Aucun commentaire pour l'instant."}</p>
+        <p className="text-sm text-gray-400">
+          {"Aucun commentaire pour l'instant."}
+        </p>
       ) : (
         <div className="flex flex-col gap-3">
           {commentaires.map((c) => (
