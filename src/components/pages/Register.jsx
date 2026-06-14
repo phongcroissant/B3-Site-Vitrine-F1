@@ -47,44 +47,94 @@ export default function Register() {
     navigate("/");
   };
 
+  const inputClass =
+    "w-full px-4 py-2 bg-gray-700 border border-gray-600 text-white placeholder-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition";
+
+  const labelClass = "block text-sm font-medium text-gray-300 mb-1";
+
   return (
-    <form onSubmit={handleRegister}>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <label htmlFor="email">Email</label>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <label htmlFor="pseudo">Pseudo</label>
-      <input
-        type="text"
-        placeholder="Pseudo"
-        value={pseudo}
-        onChange={(e) => setPseudo(e.target.value)}
-        required
-      />
-      <label htmlFor="password">Mot de passe</label>
-      <input
-        type="password"
-        placeholder="Mot de passe"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <label htmlFor="confirmPassword">Confirmer votre mot de passe</label>
-      <input
-        type="password"
-        placeholder="Confirmer"
-        value={confirm}
-        onChange={(e) => setConfirm(e.target.value)}
-        required
-      />
-      <button type="submit" disabled={loading}>
-        {loading ? "Chargement..." : "Créer mon compte"}
-      </button>
-    </form>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-gray-800 rounded-2xl shadow-md p-8">
+        <h1 className="text-2xl font-bold text-white mb-6 text-center">
+          Créer un compte
+        </h1>
+
+        {error && (
+          <div className="mb-4 px-4 py-3 bg-red-900/40 border border-red-500 text-red-400 text-sm rounded-lg">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleRegister} className="space-y-5">
+          <div>
+            <label htmlFor="email" className={labelClass}>
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="exemple@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className={inputClass}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="pseudo" className={labelClass}>
+              Pseudo
+            </label>
+            <input
+              id="pseudo"
+              type="text"
+              placeholder="Votre pseudo"
+              value={pseudo}
+              onChange={(e) => setPseudo(e.target.value)}
+              required
+              className={inputClass}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className={labelClass}>
+              Mot de passe
+            </label>
+            <input
+              id="password"
+              type="password"
+              placeholder="8 caractères minimum"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className={inputClass}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="confirmPassword" className={labelClass}>
+              Confirmer le mot de passe
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              placeholder="Confirmez votre mot de passe"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              required
+              className={inputClass}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-lg transition cursor-pointer disabled:cursor-not-allowed"
+          >
+            {loading ? "Chargement..." : "Créer mon compte"}
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
