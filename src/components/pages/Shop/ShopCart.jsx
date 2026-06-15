@@ -33,9 +33,13 @@ export default function ShopCart() {
   async function fetchCart() {
     setLoading(true);
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     const cart = await getOrCreateCart(user.id);
 
     const { data, error } = await supabase
@@ -59,8 +63,8 @@ export default function ShopCart() {
 
     setCartItems((prev) =>
       prev.map((item) =>
-        item.id === itemId ? { ...item, quantite: newQuantite } : item
-      )
+        item.id === itemId ? { ...item, quantite: newQuantite } : item,
+      ),
     );
   }
 
@@ -70,7 +74,9 @@ export default function ShopCart() {
   }
 
   async function clearCart() {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return;
 
     const cart = await getOrCreateCart(user.id);
@@ -81,7 +87,7 @@ export default function ShopCart() {
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.products.prix * item.quantite,
-    0
+    0,
   );
 
   if (loading)
@@ -97,7 +103,9 @@ export default function ShopCart() {
       </h1>
 
       {cartItems.length === 0 ? (
-        <p className="text-slate-300 text-center mt-10">Votre panier est vide.</p>
+        <p className="text-slate-300 text-center mt-10">
+          Votre panier est vide.
+        </p>
       ) : (
         <div className="container mx-auto">
           <ul className="flex flex-col gap-4 mb-6">
@@ -108,7 +116,9 @@ export default function ShopCart() {
               >
                 <div className="flex-1">
                   <h2 className="font-semibold">{item.products.libelle}</h2>
-                  <p className="text-sm text-gray-500">{item.products.prix} € / unité</p>
+                  <p className="text-sm text-gray-500">
+                    {item.products.prix} € / unité
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -148,9 +158,7 @@ export default function ShopCart() {
             >
               Vider le panier
             </button>
-            <p className="text-xl font-bold">
-              Total : {total.toFixed(2)} €
-            </p>
+            <p className="text-xl font-bold">Total : {total.toFixed(2)} €</p>
           </div>
         </div>
       )}
