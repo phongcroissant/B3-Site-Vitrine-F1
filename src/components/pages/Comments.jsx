@@ -77,7 +77,7 @@ export default function CommentSection({ idRace }) {
               <div className="flex justify-between items-center mb-1">
                 <span className="text-sm font-medium">{c.users?.username}</span>
               </div>
-              <p className="text-sm text-gray-700">{c.commentaire}</p>
+              <p className="text-sm text-white">{c.commentaire}</p>
             </div>
           ))}
         </div>
