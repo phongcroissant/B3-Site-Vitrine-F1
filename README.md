@@ -25,10 +25,33 @@ Elle doit montrer :
 
 À produire :
 
-- Objectifs du projet
-- Sources de veille
-- Synthèse des évolutions observées
-- Impacts sur le projet
+- Objectifs du projet : 
+
+Le projet Site Vitrine F1 est une application web monopage (SPA) permettant aux passionnés de Formule 1 de consulter des données en temps réel : résultats de courses, classements pilotes et constructeurs, liste des pilotes, calendrier des circuits, et boutique en ligne. Le projet intègre une gestion d'authentification complète (inscription, connexion, routes protégées) et un système de commentaires par course.
+
+- Sources de veille :  
+
+MDN Web Docs & documentation React 19 (hooks, Server Components, transitions)  
+Documentation officielle Vite 7, Tailwind CSS v4, DaisyUI v5  
+Supabase Docs – Auth, Row Level Security (RLS), fonctions PostgreSQL (RPC)  
+RGPD – CNIL : recommandations sur la collecte minimale de données, durée de conservation  
+RGAA 4.1 – Référentiel général d'amélioration de l'accessibilité  
+OWASP Top 10 – bonnes pratiques de sécurité web  
+GitHub Dependabot & npm audit – surveillance des dépendances vulnérables  
+State of JS 2024 – tendances frameworks et bundlers  
+
+- Synthèse des évolutions observées :  
+
+React 19 introduit les Actions et useActionState qui simplifient la gestion des formulaires asynchrones. Vite 7 apporte une compatibilité Node ≥20.19 et des performances accrues au build. Tailwind CSS v4 abandonne le fichier tailwind.config.js au profit d'une configuration CSS-native. Supabase continue d'enrichir ses fonctions RPC PostgreSQL et son système de RLS. La réglementation RGPD exige la mise à jour de l'interface de gestion des consentements et la documentation des données stockées.
+
+- Impacts sur le projet :  
+
+Migration vers React 19 avec adoption progressive des nouvelles APIs d'actions
+Variables d'environnement séparées en .env (non commité) et .env.exemple pour sécuriser les clés Supabase
+Mise en place de Row Level Security sur les tables Supabase (comments, cart, users)
+Politique de not-tracking : aucun outil analytique tiers installé, conformité RGPD allégée
+Accessibilité : skip-link, attributs aria-label sur la nav, balises sémantiques HTML5
+
 
 ### 2. Analyse des besoins et benchmark
 
@@ -41,23 +64,71 @@ Doit démontrer :
 
 À produire :
 
-- Présentation du client
-- Analyse de marché
-- Benchmark
-- Synthèse des besoins fonctionnels et non fonctionnels
+- Présentation du client :  
+
+Le site cible les fans de F1, sportifs curieux et acheteurs de merchandising. Il se positionne comme un agrégateur de données F1 open-source, gratuit, sans publicité, enrichi d'une boutique et d'un espace communautaire (commentaires).
+
+- Analyse de marché :  
+
+
+- Benchmark :  
+
+| Critère | Site F1 Officiel | F1 Fantasy | Mon Projet |
+|---------|------------------|------------|------------|
+| API Données F1 | Propriétaire | Propriétaire | OpenF1 + Jolpica (open) |
+| Commentaires | Non | Non | Oui (Supabase) |
+| Boutique | Oui | Non | Oui (catalogue BDD) |
+|Auth Incluse | Oui | Oui | Oui (Supabase Auth) |
+| Accessibilité RGAA | Partielle | Non | Oui (skip-link, aria) |
+
+- Synthèse des besoins fonctionnels :  
+
+Consulter les résultats du dernier Grand Prix en page d'accueil  
+Lister les pilotes de la saison en cours avec photo et écurie  
+Afficher le calendrier complet des circuits de la saison  
+Consulter les résultats détaillés de chaque course par round  
+Poster et lire des commentaires sur chaque course (utilisateurs connectés)  
+Consulter et gérer un classement pilotes et constructeurs  
+Parcourir et ajouter des produits à un panier (boutique)  
+S'inscrire, se connecter et accéder aux routes protégées (panier)  
+
+- Synthèse des besoins non fonctionnels :  
+
+Performance : build optimisé Vite avec code-splitting, lazy loading des images  
+Sécurité : variables d'environnement, RLS Supabase, JWT sessions, routes protégées  
+Accessibilité : RGAA 4.1 – skip-link, lang="fr", aria-label, contraste suffisant  
+Maintenabilité : ESLint configuré, tests Vitest, CI GitHub Actions  
+Responsive : Tailwind CSS mobile-first, menu hamburger pour mobile  
+Déploiement continu : Vercel + vercel.json rewrites pour SPA routing  
+
+
+
 
 ### 3. Cadrage technique
 
 Doit démontrer :
 
-- le choix argumenté d’une architecture (MERN, MEAN, etc.) ;
+- le choix argumenté d’une architecture (MERN, MEAN, etc.) :
 - la cohérence de la stack technique ;
 - la prise en compte de la sécurité, de l’éthique et de l’accessibilité.
 
 À produire :
 
 - Schéma d’architecture
+
+Architecture retenue : SPA React + BaaS Supabase
+L'architecture choisie repose sur une séparation claire entre le front-end (React SPA) et le back-end as a service (Supabase). Cette approche supprime le besoin d'un serveur Node.js/Express dédié, réduisant la surface d'attaque et les coûts d'infrastructure.
+
 - Description des couches
+
+| Couche | Technologie | Justification |
+|---------|------------------|------------|
+| UI / Framework | React 19 + JSX | Écosystème mature, composants réutilisables, hooks puissants |
+| Build / Bundler | Vite 7 | HMR ultra-rapide, ESM natif, build optimisé | 
+| Routing | React Router v7 | Gestion SPA avec routes imbriquées (Standings) | 
+| Styles | Tailwind CSS v4 + DaisyUI v5 | Utility-first, design system rapide, thèmes | 
+| State management | Redux Toolkit | Gestion d'état globale scalable |
+
 - Choix technologiques
 
 ### 4. Cahier des charges
