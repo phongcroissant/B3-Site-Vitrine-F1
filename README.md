@@ -114,12 +114,25 @@ Doit démontrer :
 
 À produire :
 
-- Schéma d’architecture
+- Schéma d’architecture :  
+
+## Schéma d'architecture
+
+```
+Utilisateur → Vercel CDN → React SPA (Vite build) → [React Router] → Composants pages
+                                             ↓
+                          Supabase (Auth JWT + PostgreSQL + RLS)
+                                             ↓
+                          Tables : users | comments | products | cart | carts_products
+                                             ↑
+                          APIs externes : OpenF1 API / Jolpi Ergast API
+```
+
 
 Architecture retenue : SPA React + BaaS Supabase
 L'architecture choisie repose sur une séparation claire entre le front-end (React SPA) et le back-end as a service (Supabase). Cette approche supprime le besoin d'un serveur Node.js/Express dédié, réduisant la surface d'attaque et les coûts d'infrastructure.
 
-- Description des couches
+- Description des couches et Choix technologiques
 
 | Couche | Technologie | Justification |
 |---------|------------------|------------|
@@ -127,9 +140,11 @@ L'architecture choisie repose sur une séparation claire entre le front-end (Rea
 | Build / Bundler | Vite 7 | HMR ultra-rapide, ESM natif, build optimisé | 
 | Routing | React Router v7 | Gestion SPA avec routes imbriquées (Standings) | 
 | Styles | Tailwind CSS v4 + DaisyUI v5 | Utility-first, design system rapide, thèmes | 
-| State management | Redux Toolkit | Gestion d'état globale scalable |
-
-- Choix technologiques
+| BDD & Auth | Supabase (PostgreSQL) | Auth JWT, RLS, RPC, temps réel intégré |
+| APIs externes | OpenF1, Jolpica/Ergast | Données F1 gratuites et open-source |
+| Tests | Vitest + Testing Library | Tests unitaires/composants, mocks intégrés |
+| Linting | ESLint 9 + plugin React | Qualité du code, standards JSX |
+| CI/CD | GitHub Actions + Vercel | Build, lint, deploy automatisé | 
 
 ### 4. Cahier des charges
 
@@ -140,6 +155,42 @@ Doit inclure :
 - documentation API
 - règles de déploiement
 - exigences RGAA
+
+## Routes de l'application
+
+| Route                        | Page                                | Accès                          |
+|------------------------------|-------------------------------------|--------------------------------|
+| `/`                          | Accueil – résultats dernier GP      | Public                         |
+| `/driverList`                | Liste des pilotes de la saison      | Public                         |
+| `/circuit`                   | Calendrier des circuits             | Public                         |
+| `/raceResult/:round`         | Résultat + commentaires d'une course| Public                         |
+| `/standings`                 | Classement pilotes (outlet)         | Public                         |
+| `/standings/constructorsStanding` | Classement constructeurs       | Public                         |
+| `/shop`                      | Boutique – catalogue produits       | Public                         |
+| `/shopCart`                  | Panier utilisateur                  | Protégé (auth)                 |
+| `/register`                  | Inscription                         | Public route (redir. si connecté) |
+| `/login`                     | Connexion                           | Public route (redir. si connecté) |
+| `*`                          | Page 404                            | Public                         |
+
+- Exigences RGAA appliquées :  
+
+Skip-link fonctionnel (#main-content) avec classe sr-only
+Attribut lang="fr" sur la balise HTML
+aria-label sur le bouton menu hamburger et la nav principale
+Attributs alt sur toutes les images de pilotes (src/components/pages/DriverList.jsx)
+Balises sémantiques : nav, main (via root div), button, table avec thead/tbody
+Contraste : texte noir sur fond blanc, texte blanc sur fonds sombres
+
+- Sécurité :  
+
+Variables d'environnement : VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY dans .env (ignoré par .gitignore)
+Row Level Security Supabase : les utilisateurs ne voient/modifient que leurs propres données (cart, comments)
+Auth JWT Supabase : tokens signés côté serveur, rotation de refresh tokens activée
+Routes protégées côté client : ProtectedRoute redirige vers /login si non authentifié
+PublicRoute redirige vers / si déjà connecté (évite double-inscription)
+Clé anon Supabase exposée côté client (RLS défense en profondeur)
+
+
 
 ### Préparation à l’oral
 
@@ -174,8 +225,22 @@ Elle doit montrer :
 À produire :
 
 - Description des profils utilisateurs et des parcours ;
+
+Visiteur non connecté : consultation des données F1 (résultats, pilotes, circuits, classements), navigation boutique – toutes les pages publiques
+Fan connecté : toutes les fonctionnalités ci-dessus + dépôt de commentaires sur les courses + accès au panier d'achat
+Utilisateur mobile : navigation responsive, menu hamburger, tableaux avec scroll horizontal
+
 - Liste des contraintes (techniques, navigateurs, terminaux, design) ;
+
+Compatibilité navigateurs : Chrome, Firefox, Safari (Edge) – via Browserslist + Vite/esbuild
+Responsive mobile-first : breakpoints Tailwind (sm:, md:) – grille adaptive 1 à 4 colonnes
+Thème DaisyUI Dracula (attribut data-theme dans index.html)
+Performance : lazy loading images (loading="lazy"), hook useFetch réutilisable, pas de re-renders inutiles
+SPA routing : vercel.json rewrites pour que React Router gère les URLs en production
+
 - Justification des choix technologiques.
+
+React 19 a été retenu pour sa maturité, son écosystème et la facilité de composition de composants. Tailwind CSS v4 en mode CSS-native élimine la configuration JavaScript et réduit la taille du bundle. DaisyUI fournit un design system prêt à l'emploi (cards, tables, navbars) sans JavaScript supplémentaire. Vite 7 offre un HMR instantané en développement et un build ESM optimisé pour la production.
 
 ### 2. Maquettes techniques et intégration
 
@@ -191,14 +256,80 @@ Elle doit montrer :
 - Pages intégrées ;
 - Références aux règles d’accessibilité appliquées.
 
+## Composants et fichiers
+
+| Composant / Fichier              | Rôle                                                                 |
+|----------------------------------|----------------------------------------------------------------------|
+| `App.jsx`                        | Routeur principal – BrowserRouter + Routes imbriquées               |
+| `layout/Header.jsx`              | Navigation principale – liens dynamiques selon auth, menu mobile    |
+| `pages/Home.jsx`                 | Résultats du dernier GP – tableau issu de l'API Ergast              |
+| `pages/DriverList.jsx`           | Grille de cards pilotes – API OpenF1, tri par écurie                |
+| `pages/Races/Circuit.jsx`        | Liste des circuits de la saison avec lien vers les résultats        |
+| `pages/Races/RaceResult.jsx`     | Tableau de résultats + CommentSection intégrée                      |
+| `pages/Comments.jsx`             | Commentaires par course – CRUD Supabase, auth-gated                 |
+| `pages/Standings/Standings.jsx`  | Layout outlet avec sous-navigation Pilotes/Constructeurs            |
+| `pages/Shop/Shop.jsx`            | Catalogue produits – ajout panier via RPC Supabase                  |
+| `pages/Shop/ShopCart.jsx`        | Gestion panier – quantités, suppression, total                      |
+| `pages/Login.jsx + Register.jsx` | Formulaires auth Supabase avec validation et feedback               |
+| `pages/NotFound.jsx`             | Page 404 avec lien retour accueil                                   |
+| `ProtectedRoute.jsx`      | HOC – redirige vers /login si non authentifié                     |
+| `PublicRoute.jsx`         | HOC – redirige vers / si déjà connecté                            |
+| `context/AuthContext.jsx` | Provider React Context – état utilisateur global via Supabase     |
+| `hooks/useFetch.js`       | Hook personnalisé – fetch API avec états loading/error/data       |
+| `lib/supabase.js`         | Initialisation client Supabase avec variables d'environnement     |
+
+- Hook personnalisé useFetch – extrait commenté :
+
+Le hook useFetch centralise la logique de récupération de données asynchrones. Il expose trois états : loading (indicateur de chargement), error (erreur réseau ou HTTP) et data (données parsées). Il se réinitialise automatiquement si l'URL change grâce à la dépendance du useEffect.
+
+```
+export function useFetch(url) {
+  const [state, setState] = useState({ loading: true, error: false, data: null });
+
+  useEffect(() => {
+    if (!url) return;
+    setState({ loading: true, error: false, data: null });
+
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then((data) => setState({ loading: false, error: false, data }))
+      .catch(() => setState({ loading: false, error: true, data: null }));
+  }, [url]);
+
+  return state;
+}
+```
+
 ### 3. Qualité du code
 
 Elle doit montrer :
 
 - l’application des normes et standards ;
+
+ESLint 9 avec plugin react – détection des erreurs JSX, props-types, hooks rules
+Règles désactivées volontairement : react/prop-types (projet sans TypeScript), react/react-in-jsx-scope (React 17+)
+Babel ESLint parser avec preset-react pour le support JSX
+Nommage cohérent : PascalCase pour les composants, camelCase pour les fonctions/hooks
+Séparation des responsabilités : hooks/, context/, lib/, components/pages/, components/layout/
+
 - l’utilisation de la méthode SOLID ;
+
+Single Responsibility : chaque composant a un rôle unique (Comments séparé de RaceResult, useFetch isolé)
+Open/Closed : Header générique alimenté par tableaux de liens, extensible sans modification du composant
+Dependency Inversion : les composants consomment useAuth() et useFetch() via abstractions, pas Supabase directement
+
 - la sécurité et la compatibilité multi‑navigateurs et multi‑supports ;
 - la prise en compte de l’éco‑conception.
+
+Lazy loading natif sur les images (<img loading="lazy">) – réduit la bande passante
+Bundle optimisé Vite avec tree-shaking automatique – élimine le code mort
+Pas de bibliothèque d'icônes lourde – emojis natifs pour les indicateurs visuels
+DaisyUI chargé uniquement via plugin CSS – pas de JavaScript DaisyUI en bundle
+Aucun tracking tiers (Google Analytics, etc.) – réduction des requêtes réseau
+
 
 À produire :
 
@@ -211,8 +342,28 @@ Elle doit montrer :
 Elle doit montrer :
 
 - l’organisation du code ;
+
+src/components/ – tous les composants React (layout/, pages/ avec sous-dossiers Races/, Shop/, Standings/)  
+src/context/ – AuthContext.jsx pour la gestion de l'état d'authentification global  
+src/hooks/ – hooks personnalisés (useFetch.js)  
+src/lib/ – initialisation des clients externes (supabase.js)  
+src/css/ – style.css avec imports Tailwind et plugin DaisyUI  
+src/setupTests.jsx – configuration Jest-DOM pour les tests  
+
 - les outils de versioning et de build ;
+
+Vite 7 : transpilation, bundling, HMR (npm run dev) et production build (npm run build)  
+Git : branches feature/, commits conventionnels, historique dans .github/  
+GitHub Actions (ci.yml) : pipeline sur push/PR – checkout → setup-node → npm ci → lint → build  
+Vercel : déploiement automatique sur push main, preview deployments sur PRs
+
 - les procédures de contrôle qualité.
+
+npm run lint – ESLint sur tous les fichiers .js/.jsx/.ts/.tsx  
+npm run test – Vitest avec jsdom, setup Testing Library, coverage sur Login et Register  
+npm run build – vérification que le build de production ne génère pas d'erreur  
+CI bloquante : le merge est impossible si lint ou build échouent  
+
 
 ### Préparation à l’oral
 
@@ -239,11 +390,21 @@ Démontrer la capacité à concevoir, développer, sécuriser, tester et documen
 Elle doit montrer :
 
 - le choix justifié des technologies, plateformes et langages ;
+
+Le back-end repose sur Supabase, un Backend-as-a-Service open-source construit sur PostgreSQL. Cette architecture élimine la nécessité d'un serveur applicatif dédié tout en offrant des fonctionnalités avancées : authentification JWT, Row Level Security, fonctions PostgreSQL (RPC) et API REST auto-générée.
+
+Base de données : PostgreSQL 17 (Supabase géré) – relationnel, ACID, support JSON  
+Auth : Supabase Auth – JWT, refresh token rotation (10s réuse interval), bcrypt passwords  
+API : PostgREST auto-généré par Supabase – endpoints REST pour chaque table  
+RPC : fonctions PL/pgSQL exposées via supabase.rpc() – ex. upsert_cart_product  
+CLI Supabase : migrations versionnées, seed, configuration locale (config.toml)  
+Hébergement : cloud Supabase (SaaS) – région configurable, backups automatiques  
+
 - la cohérence de l’architecture logicielle.
 
 À produire :
 
-- Description du framework, de l’API et du cloud ;
+- Description du framework, de l’API et du cloud;
 - Schéma d’architecture.
 
 ### 2. Base de données
@@ -265,8 +426,29 @@ Elle doit montrer :
 Elle doit montrer :
 
 - l’authentification et l’autorisation ;
+
+Supabase Auth : inscription par email/password, hashage bcrypt, JWT signé côté serveur
+Durée de session : 3600 secondes (1h) avec rotation de refresh token activée
+Longueur minimale du mot de passe : 6 caractères côté Supabase, 8 caractères côté client (validation Register.jsx)
+Clé anon Supabase : exposée côté client (nécessaire) – sécurité assurée par RLS
+Row Level Security : chaque utilisateur ne peut lire/écrire que ses propres enregistrements dans cart, carts_products et comments
+ProtectedRoute React : vérification côté client du contexte auth avant accès à /shopCart
+
 - la protection des données ;
+
+Variables d'environnement VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY dans .env (listé dans .gitignore)
+Fichier .env.exemple fourni sans valeurs réelles pour guider les développeurs
+Aucune donnée sensible stockée en localStorage – sessions gérées par Supabase Auth
+Politique RGPD : collecte minimale (email, pseudo uniquement), pas de tracking tiers
+
 - la conformité RGPD.
+
+enable_anonymous_sign_ins = false – pas de comptes anonymes  
+enable_confirmations = false (dev) – à activer en production avec SMTP  
+double_confirm_changes = true – double confirmation email pour changement d'email  
+enable_refresh_token_rotation = true – rotation automatique des tokens  
+minimum_password_length = 6 (Supabase) + 8 (validation front)
+
 
 ### 4. Tests et maintenance
 
@@ -274,6 +456,18 @@ Elle doit montrer :
 
 - la mise en place de tests unitaires et automatisés ;
 - le monitoring et la journalisation.
+
+vi.hoisted() pour déclarer les mocks avant les imports – évite les problèmes de hoisting ESM  
+vi.mock('react-router-dom') – mock de useNavigate avec mockNavigate  
+vi.mock('../../lib/supabase') – mock de supabase.auth.signInWithPassword / signUp  
+vi.clearAllMocks() dans beforeEach – isolation des tests
+
+Vitest 4 avec environment jsdom (DOM simulé) configuré dans vite.config.js  
+@testing-library/jest-dom pour les matchers dom (toBeInTheDocument, etc.)  
+@testing-library/react pour render, screen, fireEvent, waitFor  
+setupFiles : src/setupTests.jsx importe jest-dom automatiquement  
+
+
 
 ### 5. Documentation
 
@@ -316,6 +510,25 @@ Il doit montrer :
 - Dépôt Git avec historique ;
 - Description du workflow ;
 - Accès à la documentation.
+
+Workflow Git implémenté :  
+
+Dépôt GitHub public avec historique de commits complet  
+Branche main protégée – pipeline CI obligatoire avant merge  
+Branches feature/nomFeature pour chaque nouvelle fonctionnalité (ex : feature/shop-cart, feature/comments)  
+Commits atomiques et descriptifs – un commit = une modification logique  
+Pull Requests avec revue de code avant merge  
+Tags de version sur les releases significatives  
+
+Pipeline CI/CD (.github/workflows/ci.yml) :  
+La pipeline GitHub Actions se déclenche sur chaque push et pull request. Elle exécute trois étapes en séquence :  
+actions/checkout@v4 – récupération du code source  
+actions/setup-node@v4 – installation de Node.js  
+npm ci – installation déterministe des dépendances (package-lock.json)  
+npm run lint – vérification ESLint (bloquant si erreurs)  
+npm run build – build Vite de production (bloquant si erreurs)
+
+
 
 ### 2. Gestion agile et pilotage d’équipe
 
