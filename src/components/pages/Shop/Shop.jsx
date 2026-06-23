@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { useAuth } from "../../../context/AuthContext";
+import SearchBar from "../../ui/SearchBar";
 
 export default function Shop() {
   const { user } = useAuth();
@@ -75,12 +76,11 @@ export default function Shop() {
         Shop
       </h1>
       <div className="container mx-auto px-4 mb-4">
-        <input
-          type="text"
+        <SearchBar
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={setSearch}
           placeholder="Rechercher un produit..."
-          className="w-full p-2 rounded text-black"
+          className=""
         />
       </div>
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4 container mx-auto px-4">

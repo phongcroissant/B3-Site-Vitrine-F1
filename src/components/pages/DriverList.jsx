@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
+import SearchBar from "../ui/SearchBar";
 
 export default function DriverList() {
   const { loading, error, data } = useFetch(
@@ -24,12 +25,11 @@ export default function DriverList() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-      <input
-        type="text"
+      <SearchBar
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={setSearch}
         placeholder="Rechercher un pilote ou une écurie..."
-        className="input input-bordered w-full col-span-1 sm:col-span-2"
+        className="col-span-1 sm:col-span-2"
       />
       {filteredDrivers.map((driver) => (
         <div

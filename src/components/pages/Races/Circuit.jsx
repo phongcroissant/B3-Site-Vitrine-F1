@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFetch } from "../../../hooks/useFetch";
 import Globe from "./Globe";
+import SearchBar from "../../ui/SearchBar";
 
 export default function Circuit() {
   const { loading, error, data } = useFetch(
@@ -34,12 +35,10 @@ export default function Circuit() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <input
-          type="text"
+        <SearchBar
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={setSearch}
           placeholder="Rechercher un circuit, pays ou ville..."
-          className="input input-bordered w-full"
         />
         {filteredRaces.map((race) => {
           const isSelected = String(selected) === String(race.round);
