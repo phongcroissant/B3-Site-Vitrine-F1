@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function Shop() {
+  const { user } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -77,13 +79,15 @@ export default function Shop() {
               <h2>{product.libelle}</h2>
               <p>Prix : {product.prix} €</p>
             </div>
-            <button
-              onClick={() => addToCart(product.id)}
-              disabled={addingId === product.id}
-              className="w-full text-black p-1 rounded text-lg border bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {addingId === product.id ? "Ajout..." : "Ajouter au panier"}
-            </button>
+            {user && (
+              <button
+                onClick={() => addToCart(product.id)}
+                disabled={addingId === product.id}
+                className="w-full text-black p-1 rounded text-lg border bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {addingId === product.id ? "Ajout..." : "Ajouter au panier"}
+              </button>
+            )}
           </li>
         ))}
       </ul>
