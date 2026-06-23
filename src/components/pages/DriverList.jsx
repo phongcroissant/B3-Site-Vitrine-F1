@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
 
 export default function DriverList() {
   const { loading, error, data } = useFetch(
     "https://api.openf1.org/v1/drivers?session_key=latest",
   );
+  const [search, setSearch] = useState("");
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Une erreur est survenue</p>;
@@ -13,9 +15,23 @@ export default function DriverList() {
     a.team_name.localeCompare(b.team_name),
   );
 
+  const term = search.toLowerCase();
+  const filteredDrivers = drivers.filter(
+    (driver) =>
+      driver.full_name.toLowerCase().includes(term) ||
+      driver.team_name.toLowerCase().includes(term),
+  );
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-      {drivers.map((driver) => (
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Rechercher un pilote ou une écurie..."
+        className="input input-bordered w-full col-span-1 sm:col-span-2"
+      />
+      {filteredDrivers.map((driver) => (
         <div
           key={driver.driver_number}
           className="card w-96 bg-base-100 shadow-xl mx-auto"
