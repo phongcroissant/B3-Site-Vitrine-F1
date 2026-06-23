@@ -25,16 +25,16 @@ function fillForm({
   password = "motdepasse123",
   confirm = "motdepasse123",
 } = {}) {
-  fireEvent.change(screen.getByPlaceholderText("Email"), {
+  fireEvent.change(screen.getByLabelText("Email"), {
     target: { value: email },
   });
-  fireEvent.change(screen.getByPlaceholderText("Pseudo"), {
+  fireEvent.change(screen.getByLabelText("Pseudo"), {
     target: { value: pseudo },
   });
-  fireEvent.change(screen.getByPlaceholderText("Mot de passe"), {
+  fireEvent.change(screen.getByLabelText("Mot de passe"), {
     target: { value: password },
   });
-  fireEvent.change(screen.getByPlaceholderText("Confirmer"), {
+  fireEvent.change(screen.getByLabelText("Confirmer le mot de passe"), {
     target: { value: confirm },
   });
 }

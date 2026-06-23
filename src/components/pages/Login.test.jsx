@@ -21,10 +21,10 @@ function fillForm({
   email = "test@example.com",
   password = "motdepasse123",
 } = {}) {
-  fireEvent.change(screen.getByPlaceholderText("Email"), {
+  fireEvent.change(screen.getByLabelText("Email"), {
     target: { value: email },
   });
-  fireEvent.change(screen.getByPlaceholderText("Mot de passe"), {
+  fireEvent.change(screen.getByLabelText("Mot de passe"), {
     target: { value: password },
   });
 }
