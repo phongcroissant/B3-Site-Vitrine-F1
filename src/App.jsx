@@ -21,6 +21,7 @@ export default function App() {
       <BrowserRouter>
         <Navbar></Navbar>
 
+        <main id="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route element={<PublicRoute />}>
@@ -46,6 +47,7 @@ export default function App() {
 
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </main>
       </BrowserRouter>
     </>
   );

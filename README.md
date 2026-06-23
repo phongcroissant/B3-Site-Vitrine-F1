@@ -407,6 +407,24 @@ Hébergement : cloud Supabase (SaaS) – région configurable, backups automatiq
 - Description du framework, de l’API et du cloud;
 - Schéma d’architecture.
 
+#### Couche backend applicative – Supabase Edge Functions
+
+Au-delà de l'API REST auto-générée (PostgREST) et des fonctions RPC PL/pgSQL, le
+projet expose une **Edge Function serverless** (`supabase/functions/checkout`)
+écrite en TypeScript/Deno. Elle constitue une véritable couche de logique métier
+côté serveur, non contournable par le client :
+
+- **Authentification serveur** : l'identité est lue depuis le JWT (`auth.getUser()`),
+  jamais depuis le corps de la requête.
+- **Validation serveur** : recalcul du total à partir des prix réellement stockés
+  en base (le front n'envoie aucun prix), contrôle des quantités (entiers positifs).
+  → protection contre la falsification de prix (OWASP A04/A08).
+- **Transition d'état contrôlée** : passage du panier de `en_cours` à `valide`
+  avec garde-fou anti double-validation.
+
+Appelée côté front via `supabase.functions.invoke("checkout")` depuis la page
+panier. Déploiement : `npx supabase functions deploy checkout`.
+
 ### 2. Base de données
 
 Elle doit montrer :

@@ -5,6 +5,8 @@ export default function ShopCart() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [checkoutMsg, setCheckoutMsg] = useState(null);
+  const [checkingOut, setCheckingOut] = useState(false);
 
   useEffect(() => {
     fetchCart();
@@ -85,6 +87,30 @@ export default function ShopCart() {
     setCartItems([]);
   }
 
+  // La validation passe par l'Edge Function "checkout" : c'est le serveur qui
+  // recalcule le total et vérifie le panier. Le front n'envoie aucun prix.
+  async function handleCheckout() {
+    setCheckingOut(true);
+    setCheckoutMsg(null);
+
+    const { data, error } = await supabase.functions.invoke("checkout");
+
+    if (error || data?.error) {
+      setCheckoutMsg({
+        type: "error",
+        text: data?.error || "Échec de la validation de la commande.",
+      });
+    } else {
+      setCheckoutMsg({
+        type: "success",
+        text: `Commande validée ! Total : ${data.commande.total.toFixed(2)} €`,
+      });
+      setCartItems([]);
+    }
+
+    setCheckingOut(false);
+  }
+
   const total = cartItems.reduce(
     (sum, item) => sum + item.products.prix * item.quantite,
     0,
@@ -160,7 +186,27 @@ export default function ShopCart() {
             </button>
             <p className="text-xl font-bold">Total : {total.toFixed(2)} €</p>
           </div>
+
+          <div className="mt-4 flex flex-col items-end gap-2">
+            <button
+              onClick={handleCheckout}
+              disabled={checkingOut}
+              className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-semibold px-6 py-2 rounded"
+            >
+              {checkingOut ? "Validation..." : "Valider la commande"}
+            </button>
+          </div>
         </div>
+      )}
+
+      {checkoutMsg && (
+        <p
+          className={`text-center mt-6 ${
+            checkoutMsg.type === "success" ? "text-green-400" : "text-red-400"
+          }`}
+        >
+          {checkoutMsg.text}
+        </p>
       )}
     </>
   );
