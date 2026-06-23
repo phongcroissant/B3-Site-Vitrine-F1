@@ -1,8 +1,13 @@
 import { useMemo, useRef, useState } from "react";
+import { useFetch } from "../../../hooks/useFetch";
 
 const RADIUS = 200;
 const SIZE = RADIUS * 2 + 40;
 const CENTER = SIZE / 2;
+
+// GeoJSON basse resolution des terres (continents), directement exploitable.
+const LAND_URL =
+  "https://raw.githubusercontent.com/martynafford/natural-earth-geojson/master/110m/physical/ne_110m_land.json";
 
 const deg2rad = (d) => (d * Math.PI) / 180;
 
@@ -24,6 +29,54 @@ function project(lat, lon, lambda, phi) {
     y: CENTER - y * RADIUS,
     visible: cosc >= 0, // face cachée du globe -> on n'affiche pas
   };
+}
+
+// Variante pour les polygones de terre : les sommets de la face cachée sont
+// rabattus sur le bord du globe afin que les contours qui franchissent
+// l'horizon restent cohérents (le tout est ensuite découpé au disque).
+function projectLand(lat, lon, lambda, phi) {
+  const la = deg2rad(lat);
+  const lo = deg2rad(lon) - deg2rad(lambda);
+  const p = deg2rad(phi);
+
+  const cosc =
+    Math.sin(p) * Math.sin(la) + Math.cos(p) * Math.cos(la) * Math.cos(lo);
+
+  const x = Math.cos(la) * Math.sin(lo);
+  const y = Math.cos(p) * Math.sin(la) - Math.sin(p) * Math.cos(la) * Math.cos(lo);
+
+  if (cosc >= 0) {
+    return { x: CENTER + x * RADIUS, y: CENTER - y * RADIUS };
+  }
+  const m = Math.hypot(x, y) || 1;
+  return { x: CENTER + (x / m) * RADIUS, y: CENTER - (y / m) * RADIUS };
+}
+
+// Transforme les features GeoJSON (Polygon / MultiPolygon) en chemins SVG.
+function buildLand(geo, lambda, phi) {
+  if (!geo?.features) return [];
+  const paths = [];
+
+  const ringToPath = (ring) => {
+    let d = "";
+    ring.forEach(([lon, lat], i) => {
+      const { x, y } = projectLand(lat, lon, lambda, phi);
+      d += `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`;
+    });
+    return d + "Z";
+  };
+
+  geo.features.forEach((f) => {
+    const { type, coordinates } = f.geometry || {};
+    if (type === "Polygon") {
+      coordinates.forEach((ring) => paths.push(ringToPath(ring)));
+    } else if (type === "MultiPolygon") {
+      coordinates.forEach((poly) =>
+        poly.forEach((ring) => paths.push(ringToPath(ring))),
+      );
+    }
+  });
+  return paths;
 }
 
 // Lignes du quadrillage (méridiens + parallèles) pour donner du relief à la rotation.
@@ -75,6 +128,13 @@ export default function Globe({ races, selected, onSelect }) {
         })
         .filter((p) => p && !Number.isNaN(p.lat) && !Number.isNaN(p.lon)),
     [races],
+  );
+
+  const { data: landGeo } = useFetch(LAND_URL);
+
+  const land = useMemo(
+    () => buildLand(landGeo, rotation.lambda, rotation.phi),
+    [landGeo, rotation],
   );
 
   const graticule = useMemo(
@@ -131,9 +191,18 @@ export default function Globe({ races, selected, onSelect }) {
             <stop offset="0%" stopColor="#1d4ed8" />
             <stop offset="100%" stopColor="#0b1f4d" />
           </radialGradient>
+          <clipPath id="globe-clip">
+            <circle cx={CENTER} cy={CENTER} r={RADIUS} />
+          </clipPath>
         </defs>
 
         <circle cx={CENTER} cy={CENTER} r={RADIUS} fill="url(#ocean)" />
+
+        <g clipPath="url(#globe-clip)">
+          {land.map((d, i) => (
+            <path key={i} d={d} fill="#15803d" stroke="#166534" strokeWidth="0.5" />
+          ))}
+        </g>
 
         {graticule.map((pts, i) => (
           <polyline
