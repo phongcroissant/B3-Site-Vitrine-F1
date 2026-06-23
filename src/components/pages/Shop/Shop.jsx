@@ -67,11 +67,11 @@ export default function Shop() {
       <h1 className="text-4xl text-slate-100 font-bold text-center pb-5">
         Shop
       </h1>
-      <ul className="grid grid-cols-4 gap-4 justify-items-start mb-4 container mx-auto">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4 container mx-auto px-4">
         {products.map((product) => (
           <li
             key={product.id}
-            className="bg-slate-100 p-4 w-75 rounded text-black mx-auto"
+            className="bg-slate-100 p-4 w-full rounded text-black"
           >
             <div className="flex justify-between mb-4">
               <h2>{product.libelle}</h2>
