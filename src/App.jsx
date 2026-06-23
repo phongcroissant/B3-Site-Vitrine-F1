@@ -9,6 +9,7 @@ import Circuit from "./components/pages/Races/Circuit";
 import RaceResult from "./components/pages/Races/RaceResult";
 import Shop from "./components/pages/Shop/Shop";
 import ShopCart from "./components/pages/Shop/ShopCart";
+import OrderHistory from "./components/pages/Shop/OrderHistory";
 import Register from "./components/pages/Register";
 import Login from "./components/pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -43,6 +44,7 @@ export default function App() {
 
           <Route element={<ProtectedRoute />}>
             <Route path="/shopCart" element={<ShopCart />} />
+            <Route path="/orders" element={<OrderHistory />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

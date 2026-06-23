@@ -26,7 +26,10 @@ export default function Header() {
   const closeMenu = () => setMenuOpen(false);
 
   const authLinks = user
-    ? [{ to: "/shopCart", label: "Panier" }]
+    ? [
+        { to: "/shopCart", label: "Panier" },
+        { to: "/orders", label: "Mes commandes" },
+      ]
     : [
         { to: "/register", label: "Inscription" },
         { to: "/login", label: "Connexion" },
