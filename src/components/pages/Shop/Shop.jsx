@@ -8,6 +8,7 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [addingId, setAddingId] = useState(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     async function fetchProducts() {
@@ -64,13 +65,26 @@ export default function Shop() {
   if (error)
     return <p className="text-red-400 text-center mt-10">Erreur : {error}</p>;
 
+  const filteredProducts = products.filter((product) =>
+    product.libelle.toLowerCase().includes(search.toLowerCase()),
+  );
+
   return (
     <>
       <h1 className="text-4xl text-slate-100 font-bold text-center pb-5">
         Shop
       </h1>
+      <div className="container mx-auto px-4 mb-4">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Rechercher un produit..."
+          className="w-full p-2 rounded text-black"
+        />
+      </div>
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4 container mx-auto px-4">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <li
             key={product.id}
             className="bg-slate-100 p-4 w-full rounded text-black"
