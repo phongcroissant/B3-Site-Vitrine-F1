@@ -26,7 +26,6 @@ export default function Login() {
       return;
     }
 
-    console.log("USER CONNECTED:", data.user);
     setLoading(false);
     navigate("/");
   };
