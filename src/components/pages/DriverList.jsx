@@ -41,8 +41,8 @@ export default function DriverList() {
               src={driver.headshot_url}
               alt={`Photo de ${driver.full_name}`}
               loading="lazy"
-              width="200"
-              height="200"
+              width="150"
+              height="150"
             />
           </figure>
           <div className="card-body">
