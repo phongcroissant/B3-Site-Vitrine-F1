@@ -22,9 +22,10 @@ interface CartLine {
 }
 
 Deno.serve(async (req) => {
+  const cors = corsHeaders(req);
   // Pré-vol CORS
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: cors });
   }
 
   if (req.method !== "POST") {
@@ -83,10 +84,7 @@ Deno.serve(async (req) => {
   let total = 0;
   for (const line of lines) {
     if (!Number.isInteger(line.quantite) || line.quantite < 1) {
-      return json(
-        { error: `Quantité invalide pour la ligne ${line.id}` },
-        422,
-      );
+      return json({ error: `Quantité invalide pour la ligne ${line.id}` }, 422);
     }
     if (!line.products || typeof line.products.prix !== "number") {
       return json({ error: `Produit introuvable (ligne ${line.id})` }, 422);
@@ -122,9 +120,9 @@ Deno.serve(async (req) => {
   });
 });
 
-function json(body: unknown, status = 200): Response {
+function json(body: unknown, status = 200, cors: HeadersInit = {}): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...cors, "Content-Type": "application/json" },
   });
 }
