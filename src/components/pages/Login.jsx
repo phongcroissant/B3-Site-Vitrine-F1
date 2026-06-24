@@ -30,15 +30,14 @@ export default function Login() {
     navigate("/");
   };
 
-  const inputClass =
-    "w-full px-4 py-2 bg-gray-700 border border-gray-600 text-white placeholder-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition";
+  const inputClass = "f1-input";
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-gray-800 rounded-2xl shadow-md p-8">
-        <h1 className="text-2xl font-bold text-white mb-6 text-center">
-          Connexion
-        </h1>
+    <div className="min-h-screen flex items-center justify-center px-4 f1-fade-up">
+      <div className="w-full max-w-md f1-card p-8">
+        <p className="f1-eyebrow text-center">Formula 1</p>
+        <h1 className="f1-title text-3xl mb-1 text-center">Connexion</h1>
+        <div className="f1-accent-line max-w-[8rem] mx-auto mb-6" />
 
         {error && (
           <div className="mb-4 px-4 py-3 bg-red-900/40 border border-red-500 text-red-400 text-sm rounded-lg">
@@ -86,11 +85,18 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-lg transition cursor-pointer disabled:cursor-not-allowed"
+            className="f1-btn w-full mt-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {loading ? "Connexion..." : "Se connecter"}
           </button>
         </form>
+
+        <p className="text-center text-sm text-white/50 mt-6">
+          Pas encore de compte ?{" "}
+          <a href="/register" className="f1-link">
+            Créer un compte
+          </a>
+        </p>
       </div>
     </div>
   );

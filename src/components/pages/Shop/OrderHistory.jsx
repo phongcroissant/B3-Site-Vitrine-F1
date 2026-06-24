@@ -52,56 +52,64 @@ export default function OrderHistory() {
     });
 
   if (loading)
-    return <p className="text-slate-100 text-center mt-10">Chargement...</p>;
+    return <p className="text-white/70 text-center mt-10">Chargement...</p>;
 
   if (error)
     return <p className="text-red-400 text-center mt-10">Erreur : {error}</p>;
 
   return (
-    <>
-      <h1 className="text-4xl text-slate-100 font-bold text-center pb-5">
-        Mes commandes
-      </h1>
+    <div className="max-w-3xl mx-auto mt-10 px-4 f1-fade-up">
+      <div className="f1-section-head">
+        <p className="f1-eyebrow">Formula 1</p>
+        <h1 className="f1-title text-4xl md:text-6xl mb-4">Mes commandes</h1>
+        <div className="f1-accent-line max-w-xs mx-auto" />
+      </div>
 
       {orders.length === 0 ? (
-        <p className="text-slate-300 text-center mt-10">
+        <p className="text-white/60 text-center mt-10">
           Vous n'avez pas encore passé de commande.
         </p>
       ) : (
-        <div className="container mx-auto flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
           {orders.map((order) => (
-            <section
-              key={order.id}
-              className="bg-slate-100 p-4 rounded text-black"
-            >
-              <header className="flex justify-between items-center border-b border-gray-300 pb-2 mb-3">
-                <h2 className="font-semibold">Commande #{order.id}</h2>
-                <span className="text-sm text-gray-500">
+            <section key={order.id} className="f1-card p-5">
+              <header className="flex justify-between items-center border-b border-white/10 pb-3 mb-3">
+                <h2 className="font-bold text-white">
+                  Commande{" "}
+                  <span className="text-red-500">#{order.id}</span>
+                </h2>
+                <span className="text-sm text-white/50">
                   {formatDate(order.created_at)}
                 </span>
               </header>
 
               <ul className="flex flex-col gap-2">
                 {order.carts_products.map((line) => (
-                  <li key={line.id} className="flex justify-between text-sm">
+                  <li
+                    key={line.id}
+                    className="flex justify-between text-sm text-white/80"
+                  >
                     <span>
                       {line.products.libelle}{" "}
-                      <span className="text-gray-500">× {line.quantite}</span>
+                      <span className="text-white/40">× {line.quantite}</span>
                     </span>
-                    <span className="font-medium">
+                    <span className="font-medium text-white">
                       {(line.products.prix * line.quantite).toFixed(2)} €
                     </span>
                   </li>
                 ))}
               </ul>
 
-              <p className="text-right font-bold mt-3 border-t border-gray-300 pt-2">
-                Total : {orderTotal(order).toFixed(2)} €
+              <p className="text-right font-bold text-white mt-3 border-t border-white/10 pt-3">
+                Total :{" "}
+                <span className="text-red-500">
+                  {orderTotal(order).toFixed(2)} €
+                </span>
               </p>
             </section>
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }

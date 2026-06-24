@@ -71,33 +71,33 @@ export default function Shop() {
   );
 
   return (
-    <>
-      <h1 className="text-4xl text-slate-100 font-bold text-center pb-5">
-        Shop
-      </h1>
-      <div className="container mx-auto px-4 mb-4">
+    <div className="max-w-6xl mx-auto mt-10 px-4 f1-fade-up">
+      <div className="f1-section-head">
+        <p className="f1-eyebrow">Formula 1</p>
+        <h1 className="f1-title text-4xl md:text-6xl mb-4">Boutique</h1>
+        <div className="f1-accent-line max-w-xs mx-auto" />
+      </div>
+
+      <div className="max-w-md mx-auto mb-8">
         <SearchBar
           value={search}
           onChange={setSearch}
           placeholder="Rechercher un produit..."
-          className=""
         />
       </div>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4 container mx-auto px-4">
+
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredProducts.map((product) => (
-          <li
-            key={product.id}
-            className="bg-slate-100 p-4 w-full rounded text-black"
-          >
-            <div className="flex justify-between mb-4">
-              <h2>{product.libelle}</h2>
-              <p>Prix : {product.prix} €</p>
-            </div>
+          <li key={product.id} className="f1-card p-5 flex flex-col">
+            <h2 className="text-lg font-bold text-white">{product.libelle}</h2>
+            <p className="text-2xl font-black text-red-500 mt-1 mb-4">
+              {product.prix} €
+            </p>
             {user && (
               <button
                 onClick={() => addToCart(product.id)}
                 disabled={addingId === product.id}
-                className="w-full text-black p-1 rounded text-lg border bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="f1-btn w-full mt-auto disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {addingId === product.id ? "Ajout..." : "Ajouter au panier"}
               </button>
@@ -105,6 +105,6 @@ export default function Shop() {
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 }

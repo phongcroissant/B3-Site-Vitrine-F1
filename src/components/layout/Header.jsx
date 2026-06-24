@@ -4,7 +4,11 @@ import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../context/AuthContext";
 
 const linkClass = ({ isActive }) =>
-  `${isActive ? "font-bold underline" : ""} mx-2 text-md font-semibold hover:underline transition-all`;
+  `relative px-3 py-1.5 text-sm font-semibold uppercase tracking-wide rounded-lg transition-colors ${
+    isActive
+      ? "text-white bg-[var(--f1-red)]/15 shadow-[inset_0_-2px_0_var(--f1-red)]"
+      : "text-white/60 hover:text-white"
+  }`;
 
 const NAV_LINKS = [
   { to: "/", label: "Accueil" },
@@ -37,20 +41,27 @@ export default function Header() {
 
   const allLinks = [...NAV_LINKS, ...authLinks];
 
+  const logoutClass =
+    "px-3 py-1.5 text-sm font-semibold uppercase tracking-wide rounded-lg border border-[var(--f1-red)]/50 text-red-500 hover:bg-[var(--f1-red)] hover:text-white transition-colors";
+
   return (
-    <nav aria-label="Navigation principale" className="p-3 border-b">
+    <nav
+      aria-label="Navigation principale"
+      className="sticky top-0 z-50 px-4 py-3 border-b border-white/10 bg-[rgba(21,21,30,0.75)] backdrop-blur-md"
+    >
       {/* Desktop */}
       <div className="hidden md:flex justify-center items-center flex-wrap gap-1">
+        <span className="font-black text-lg mr-3 tracking-tight">
+          <span className="text-red-500">🏎️</span> F1{" "}
+          <span className="text-red-500">App</span>
+        </span>
         {allLinks.map(({ to, label }) => (
           <NavLink key={to} to={to} className={linkClass}>
             {label}
           </NavLink>
         ))}
         {user && (
-          <button
-            onClick={handleLogout}
-            className="mx-2 text-md font-semibold hover:underline transition-all"
-          >
+          <button onClick={handleLogout} className={`ml-2 ${logoutClass}`}>
             Déconnexion
           </button>
         )}
@@ -58,10 +69,12 @@ export default function Header() {
 
       {/* Mobile */}
       <div className="md:hidden flex justify-between items-center px-2">
-        <span className="font-bold text-lg">🏎️ F1 App</span>
+        <span className="font-black text-lg tracking-tight">
+          <span className="text-red-500">🏎️</span> F1 App
+        </span>
         <button
           onClick={() => setMenuOpen((prev) => !prev)}
-          className="text-2xl focus:outline-none"
+          className="text-2xl text-white focus:outline-none"
           aria-label="Menu"
         >
           {menuOpen ? "✕" : "☰"}
@@ -69,7 +82,7 @@ export default function Header() {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden flex flex-col items-start gap-3 mt-3 px-4 py-3 border-t">
+        <div className="md:hidden flex flex-col items-start gap-2 mt-3 px-2 py-3 border-t border-white/10">
           {allLinks.map(({ to, label }) => (
             <NavLink key={to} to={to} className={linkClass} onClick={closeMenu}>
               {label}
@@ -78,7 +91,7 @@ export default function Header() {
           {user && (
             <button
               onClick={handleLogout}
-              className="text-md font-semibold hover:underline transition-all"
+              className={`mt-1 ${logoutClass}`}
             >
               Déconnexion
             </button>

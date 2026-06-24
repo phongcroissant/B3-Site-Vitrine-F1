@@ -123,26 +123,30 @@ export default function ShopCart() {
     return <p className="text-red-400 text-center mt-10">Erreur : {error}</p>;
 
   return (
-    <>
-      <h1 className="text-4xl text-slate-100 font-bold text-center pb-5">
-        Mon panier
-      </h1>
+    <div className="max-w-3xl mx-auto mt-10 px-4 f1-fade-up">
+      <div className="f1-section-head">
+        <p className="f1-eyebrow">Formula 1</p>
+        <h1 className="f1-title text-4xl md:text-6xl mb-4">Mon panier</h1>
+        <div className="f1-accent-line max-w-xs mx-auto" />
+      </div>
 
       {cartItems.length === 0 ? (
-        <p className="text-slate-300 text-center mt-10">
+        <p className="text-white/60 text-center mt-10">
           Votre panier est vide.
         </p>
       ) : (
-        <div className="container mx-auto">
+        <div>
           <ul className="flex flex-col gap-4 mb-6">
             {cartItems.map((item) => (
               <li
                 key={item.id}
-                className="bg-slate-100 p-4 rounded text-black flex items-center justify-between"
+                className="f1-card p-4 flex items-center justify-between gap-4"
               >
-                <div className="flex-1">
-                  <h2 className="font-semibold">{item.products.libelle}</h2>
-                  <p className="text-sm text-gray-500">
+                <div className="flex-1 min-w-0">
+                  <h2 className="font-semibold text-white truncate">
+                    {item.products.libelle}
+                  </h2>
+                  <p className="text-sm text-white/50">
                     {item.products.prix} € / unité
                   </p>
                 </div>
@@ -150,26 +154,28 @@ export default function ShopCart() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => updateQuantity(item.id, item.quantite - 1)}
-                    className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded text-lg font-bold"
+                    className="w-8 h-8 bg-white/10 hover:bg-white/20 text-white rounded-lg text-lg font-bold transition"
                   >
                     −
                   </button>
-                  <span className="w-6 text-center">{item.quantite}</span>
+                  <span className="w-6 text-center text-white">
+                    {item.quantite}
+                  </span>
                   <button
                     onClick={() => updateQuantity(item.id, item.quantite + 1)}
-                    className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded text-lg font-bold"
+                    className="w-8 h-8 bg-white/10 hover:bg-white/20 text-white rounded-lg text-lg font-bold transition"
                   >
                     +
                   </button>
                 </div>
 
-                <p className="w-24 text-right font-semibold">
+                <p className="w-24 text-right font-bold text-red-500">
                   {(item.products.prix * item.quantite).toFixed(2)} €
                 </p>
 
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="ml-4 text-red-400 hover:text-red-600 text-sm"
+                  className="text-white/40 hover:text-red-500 text-sm transition"
                 >
                   Supprimer
                 </button>
@@ -177,21 +183,23 @@ export default function ShopCart() {
             ))}
           </ul>
 
-          <div className="flex justify-between items-center bg-slate-100 p-4 rounded text-black">
+          <div className="f1-card flex justify-between items-center p-4">
             <button
               onClick={clearCart}
-              className="text-red-500 hover:text-red-700 text-sm border border-red-400 hover:border-red-600 px-3 py-1 rounded"
+              className="text-white/60 hover:text-red-500 text-sm border border-white/15 hover:border-red-500 px-3 py-1.5 rounded-lg transition"
             >
               Vider le panier
             </button>
-            <p className="text-xl font-bold">Total : {total.toFixed(2)} €</p>
+            <p className="text-xl font-bold text-white">
+              Total : <span className="text-red-500">{total.toFixed(2)} €</span>
+            </p>
           </div>
 
           <div className="mt-4 flex flex-col items-end gap-2">
             <button
               onClick={handleCheckout}
               disabled={checkingOut}
-              className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-semibold px-6 py-2 rounded"
+              className="f1-btn disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {checkingOut ? "Validation..." : "Valider la commande"}
             </button>
@@ -208,6 +216,6 @@ export default function ShopCart() {
           {checkoutMsg.text}
         </p>
       )}
-    </>
+    </div>
   );
 }
