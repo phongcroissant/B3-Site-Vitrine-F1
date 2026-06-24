@@ -15,10 +15,12 @@ create table comments (
     id_course varchar(30) not null
 );
 
+create type cart_statut as enum ('en_cours', 'valide');
+
 create table cart (
     id serial primary key,
     id_utilisateur uuid not null references users(id) on delete cascade,
-    statut text not null default 'en_cours',
+    statut cart_statut not null default 'en_cours',
     created_at timestamp with time zone default now()
 );
 
