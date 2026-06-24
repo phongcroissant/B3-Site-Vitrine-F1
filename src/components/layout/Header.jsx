@@ -50,20 +50,50 @@ export default function Header() {
       className="sticky top-0 z-50 px-4 py-3 border-b border-white/10 bg-[rgba(21,21,30,0.75)] backdrop-blur-md"
     >
       {/* Desktop */}
-      <div className="hidden md:flex justify-center items-center flex-wrap gap-1">
-        <span className="flex items-center gap-2 font-black text-lg mr-3 tracking-tight">
-          <img src="/src/img/tracker.webp" alt="" className="h-3 w-auto" />
-        </span>
-        {allLinks.map(({ to, label }) => (
-          <NavLink key={to} to={to} className={linkClass}>
-            {label}
+      <div className="hidden md:flex items-center gap-4">
+        {/* Gauche : logo */}
+        <div className="flex-1 flex items-center">
+          <NavLink
+            to="/"
+            className="flex items-center gap-2 font-black text-lg tracking-tight"
+          >
+            <img
+              src="/src/img/tracker.webp"
+              alt="Logo F1 Tracker"
+              className="h-4 w-auto"
+            />
           </NavLink>
-        ))}
-        {user && (
-          <button onClick={handleLogout} className={`ml-2 ${logoutClass}`}>
-            Déconnexion
-          </button>
-        )}
+        </div>
+
+        {/* Centre : navigation + (panier / mes commandes si connecté) */}
+        <div className="flex justify-center items-center gap-1">
+          {NAV_LINKS.map(({ to, label }) => (
+            <NavLink key={to} to={to} className={linkClass}>
+              {label}
+            </NavLink>
+          ))}
+          {user &&
+            authLinks.map(({ to, label }) => (
+              <NavLink key={to} to={to} className={linkClass}>
+                {label}
+              </NavLink>
+            ))}
+        </div>
+
+        {/* Droite : connexion / inscription (ou déconnexion) */}
+        <div className="flex-1 flex justify-end items-center gap-1">
+          {user ? (
+            <button onClick={handleLogout} className={logoutClass}>
+              Déconnexion
+            </button>
+          ) : (
+            authLinks.map(({ to, label }) => (
+              <NavLink key={to} to={to} className={linkClass}>
+                {label}
+              </NavLink>
+            ))
+          )}
+        </div>
       </div>
 
       {/* Mobile */}
