@@ -6,7 +6,7 @@ import babelParser from "@babel/eslint-parser";
 export default [
   // dist/ = bundle de build ; supabase/functions = code Deno (runtime distinct,
   // typé TS) linté séparément. On les exclut du lint front-end.
-  { ignores: ["dist/**", "supabase/functions/**"] },
+  { ignores: ["dist/**", "coverage/**", "supabase/functions/**"] },
   js.configs.recommended,
   {
     files: ["**/*.{js,mjs,cjs,jsx}"],

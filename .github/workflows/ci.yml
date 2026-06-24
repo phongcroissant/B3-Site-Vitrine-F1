@@ -7,5 +7,5 @@ jobs:
       - uses: actions/setup-node@v4
       - run: npm ci
       - run: npm run lint
-      - run: npm run test -- run
+      - run: npm run coverage
       - run: npm run build
