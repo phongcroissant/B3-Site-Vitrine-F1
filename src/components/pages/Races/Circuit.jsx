@@ -2,6 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFetch } from "../../../hooks/useFetch";
 import Globe from "./Globe";
+<<<<<<< HEAD
+=======
+import SearchBar from "../../ui/SearchBar";
+>>>>>>> 769a167dba4273087e707590d1061438c337e9e2
 
 export default function Circuit() {
   const { loading, error, data } = useFetch(
@@ -9,10 +13,23 @@ export default function Circuit() {
   );
   const races = data?.MRData.RaceTable.Races;
   const [selected, setSelected] = useState(null);
+<<<<<<< HEAD
+=======
+  const [search, setSearch] = useState("");
+>>>>>>> 769a167dba4273087e707590d1061438c337e9e2
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Une erreur est survenue</p>;
   if (!races || races.length === 0) return <p>Aucune donnée</p>;
+
+  const filteredRaces = races.filter((race) => {
+    const term = search.toLowerCase();
+    return (
+      race.raceName.toLowerCase().includes(term) ||
+      race.Circuit.Location.country.toLowerCase().includes(term) ||
+      race.Circuit.Location.locality.toLowerCase().includes(term)
+    );
+  });
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6 px-4">
@@ -24,7 +41,12 @@ export default function Circuit() {
       </div>
 
       <div className="flex flex-col gap-4">
-        {races.map((race) => {
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          placeholder="Rechercher un circuit, pays ou ville..."
+        />
+        {filteredRaces.map((race) => {
           const isSelected = String(selected) === String(race.round);
           return (
             <div

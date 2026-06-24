@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { useAuth } from "../../../context/AuthContext";
+<<<<<<< HEAD
+=======
+import SearchBar from "../../ui/SearchBar";
+>>>>>>> 769a167dba4273087e707590d1061438c337e9e2
 
 export default function Shop() {
   const { user } = useAuth();
@@ -8,6 +12,7 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [addingId, setAddingId] = useState(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     async function fetchProducts() {
@@ -64,13 +69,25 @@ export default function Shop() {
   if (error)
     return <p className="text-red-400 text-center mt-10">Erreur : {error}</p>;
 
+  const filteredProducts = products.filter((product) =>
+    product.libelle.toLowerCase().includes(search.toLowerCase()),
+  );
+
   return (
     <>
       <h1 className="text-4xl text-slate-100 font-bold text-center pb-5">
         Shop
       </h1>
+      <div className="container mx-auto px-4 mb-4">
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          placeholder="Rechercher un produit..."
+          className=""
+        />
+      </div>
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4 container mx-auto px-4">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <li
             key={product.id}
             className="bg-slate-100 p-4 w-full rounded text-black"
