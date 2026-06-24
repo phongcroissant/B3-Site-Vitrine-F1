@@ -31,13 +31,13 @@ body {
 
 /* Titres avec dégradé rouge "néon" */
 .f1-title {
-  background: linear-gradient(90deg, #ff1e00, #ff6a00);
+  background: linear-gradient(90deg, #ffffff, #c9b7aa);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   font-weight: 900;
   letter-spacing: -0.02em;
-  text-shadow: 0 0 40px rgba(225, 6, 0, 0.35);
+  text-shadow: 0 0 40px rgba(196, 159, 158, 0.35);
 }
 
 /* Carte "verre dépoli" qui réagit au survol */

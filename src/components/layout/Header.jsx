@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 const linkClass = ({ isActive }) =>
   `relative px-3 py-1.5 text-sm font-semibold uppercase tracking-wide rounded-lg transition-colors ${
     isActive
-      ? "text-white bg-[var(--f1-red)]/15 shadow-[inset_0_-2px_0_var(--f1-red)]"
+      ? "text-white bg-[var(--f1-black)]/15 shadow-[inset_0_-2px_0_var(--f1-red)]"
       : "text-white/60 hover:text-white"
   }`;
 
@@ -51,9 +51,8 @@ export default function Header() {
     >
       {/* Desktop */}
       <div className="hidden md:flex justify-center items-center flex-wrap gap-1">
-        <span className="font-black text-lg mr-3 tracking-tight">
-          <span className="text-red-500">🏎️</span> F1{" "}
-          <span className="text-red-500">App</span>
+        <span className="flex items-center gap-2 font-black text-lg mr-3 tracking-tight">
+          <img src="/src/img/tracker.webp" alt="" className="h-3 w-auto" />
         </span>
         {allLinks.map(({ to, label }) => (
           <NavLink key={to} to={to} className={linkClass}>
@@ -89,10 +88,7 @@ export default function Header() {
             </NavLink>
           ))}
           {user && (
-            <button
-              onClick={handleLogout}
-              className={`mt-1 ${logoutClass}`}
-            >
+            <button onClick={handleLogout} className={`mt-1 ${logoutClass}`}>
               Déconnexion
             </button>
           )}
