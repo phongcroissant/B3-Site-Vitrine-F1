@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../context/AuthContext";
+import imgUrl from "../../img/tracker.webp";
 
 const linkClass = ({ isActive }) =>
   `relative px-3 py-1.5 text-sm font-semibold uppercase tracking-wide rounded-lg transition-colors ${
@@ -57,11 +58,7 @@ export default function Header() {
             to="/"
             className="flex items-center gap-2 font-black text-lg tracking-tight"
           >
-            <img
-              src="/src/img/tracker.webp"
-              alt="Logo F1 Tracker"
-              className="h-4 w-auto"
-            />
+            <img src={imgUrl} alt="Logo F1 Tracker" className="h-4 w-auto" />
           </NavLink>
         </div>
 
