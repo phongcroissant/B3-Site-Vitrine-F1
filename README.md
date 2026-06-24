@@ -70,6 +70,44 @@ Le site cible les fans de F1, sportifs curieux et acheteurs de merchandising. Il
 
 - Analyse de marché :  
 
+Le marché visé est celui des **plateformes de contenu autour de la Formule 1**, à
+l'intersection du sport-data (statistiques, résultats), du média de fans et du
+e-commerce de merchandising. C'est un marché en forte croissance : l'audience F1 a
+fortement rajeuni et s'est élargie depuis la série Netflix *Drive to Survive*, avec
+un public désormais très connecté et demandeur de données en temps réel.
+
+**Cible :** fans de F1 (du suiveur occasionnel au passionné de statistiques),
+sportifs curieux, et acheteurs de merchandising. Public majoritairement jeune
+(18-40 ans), mobile-first, habitué aux interfaces réactives.
+
+**Positionnement :** agrégateur de données F1 *open-source, gratuit et sans
+publicité*, enrichi d'un espace communautaire (commentaires) et d'une boutique.
+Le projet se différencie des acteurs propriétaires (F1 officiel) par sa gratuité,
+son ouverture (APIs open data OpenF1 / Jolpica-Ergast) et l'absence de tracking.
+
+**Analyse PESTEL :**
+
+| Facteur          | Impact sur le projet                                                                 |
+|------------------|--------------------------------------------------------------------------------------|
+| **Politique**    | Réglementation européenne sur les données (RGPD) ; droits de diffusion F1 maîtrisés par la FOM (on s'appuie donc sur des données open, pas sur la vidéo). |
+| **Économique**   | Marché du merchandising sportif en croissance ; modèle serverless à faible coût fixe permettant un lancement sans investissement lourd. |
+| **Social**       | Rajeunissement et élargissement de l'audience F1 (effet *Drive to Survive*) ; forte attente de contenu temps réel et communautaire. |
+| **Technologique**| Disponibilité d'APIs open data fiables (OpenF1, Jolpica) ; standardisation des SPA et du BaaS qui abaissent la barrière technique. |
+| **Écologique**   | Éco-conception attendue : pas de tracking tiers, lazy-loading, hébergement mutualisé serverless (pas de serveur allumé en permanence). |
+| **Légal**        | Conformité RGPD (collecte minimale email/pseudo), respect des conditions d'utilisation des APIs open data, accessibilité RGAA. |
+
+**Analyse SWOT :**
+
+| Interne                                                       | Externe                                                       |
+|---------------------------------------------------------------|---------------------------------------------------------------|
+| **Forces** : gratuit et sans publicité ; données open ; espace communautaire ; accessibilité (RGAA) ; coûts d'infra faibles (serverless). | **Opportunités** : audience F1 en pleine croissance et rajeunissement ; engouement pour la data sportive ; APIs open data riches et gratuites. |
+| **Faiblesses** : dépendance à des APIs externes tierces ; pas de droits sur les contenus officiels (vidéos, logos) ; notoriété nulle au lancement. | **Menaces** : concurrence des acteurs officiels très bien dotés ; risque d'évolution/fermeture des APIs open ; volatilité de l'intérêt hors saison. |
+
+**Stratégie webmarketing envisagée :** référencement naturel (SEO) sur les
+requêtes « résultats GP », « classement pilotes » ; contenu communautaire
+(commentaires) favorisant le retour des visiteurs ; partage sur les réseaux
+sociaux lors des week-ends de course (pics de trafic anticipés dans les tests de
+charge, cf. Bloc 4).
 
 - Benchmark :  
 
@@ -580,6 +618,46 @@ Elle doit montrer :
 - Résultats ;
 - Analyse.
 
+Des tests de charge ont été mis en place avec **k6** (Grafana Labs). Les
+scénarios, scripts et résultats détaillés sont versionnés dans le dossier
+[`load-tests/`](load-tests/README.md).
+
+**Outil retenu : k6.** Choisi plutôt que JMeter car les scénarios sont écrits en
+JavaScript (cohérent avec la stack du projet), versionnables dans Git et lisibles,
+là où un export JMeter `.jmx` est en XML peu lisible.
+
+**Hypothèse de trafic :**
+
+| Scénario         | Utilisateurs simultanés | Justification                                |
+|------------------|-------------------------|----------------------------------------------|
+| Nominal          | ~50                     | trafic courant d'un site vitrine de niche    |
+| Pic (jour de GP) | ~200                    | affluence lors d'un Grand Prix / actualité F1|
+
+Critères d'acceptation : latence **p95 < 800 ms** et **taux d'erreur < 1 %**.
+
+**Scénarios de test** (paliers montée → palier nominal → pic → descente) :
+
+- `load-tests/read-drivers.js` – lecture API REST Supabase (`/rest/v1/products`), 50 → 200 VUs.
+- `load-tests/checkout.js` – Edge Function `checkout` avec auth JWT (écriture, charge modérée).
+
+**Résultats** (lecture, scénario complet 50 → 200 VUs sur 2 min 30, environnement Supabase local) :
+
+| Métrique                    | Valeur mesurée  | Seuil    | Verdict |
+|-----------------------------|-----------------|----------|---------|
+| Requêtes totales (débit)    | 10 411 (69,2/s) | —        | —       |
+| `http_req_duration` médiane | 8,11 ms         | —        | —       |
+| `http_req_duration` p95     | 50,66 ms        | < 800 ms | ✅      |
+| `http_req_failed` (erreurs) | 0,00 %          | < 1 %    | ✅      |
+| Checks réussis              | 20 822 / 20 822 | 100 %    | ✅      |
+| VUs max                     | 200             | —        | —       |
+
+**Analyse des goulots d'étranglement.** Sous un pic de 200 utilisateurs
+simultanés, l'API de lecture reste très performante (p95 ≈ 51 ms, ~16× sous le
+seuil) avec un taux d'erreur nul. Le facteur limitant identifié de l'architecture
+n'est pas le front (servi par CDN) mais le **nombre de connexions PostgreSQL**
+(pooler Supavisor de Supabase) : sous très forte charge, c'est la base de données
+qui sature en premier.
+
 ### 4. Autoscaling et optimisation
 
 Elle doit montrer :
@@ -587,6 +665,25 @@ Elle doit montrer :
 - la mise en place de règles d’autoscaling ;
 - la capacité à maintenir la performance sous charge ;
 - l’optimisation des coûts.
+
+L'architecture étant **entièrement serverless**, il n'y a pas de serveur à
+dimensionner manuellement : la montée en charge est assurée automatiquement par
+les plateformes.
+
+| Couche                     | Mécanisme de montée en charge                        | Limite / point d'attention                        |
+|----------------------------|------------------------------------------------------|---------------------------------------------------|
+| Front (Vercel)             | CDN edge mondial, scaling automatique                | Statique : pratiquement illimité                  |
+| Edge Functions (Supabase)  | Isolates Deno instanciés à la demande                | Cold start sur la première requête                |
+| Base PostgreSQL (Supabase) | Pooler de connexions Supavisor                       | **Goulot réel** : nombre de connexions Postgres   |
+
+**Maintien de la performance sous charge** : confirmé par les tests de charge
+(p95 ≈ 51 ms, 0 % d'erreur à 200 VUs).
+
+**Optimisation des coûts** : le modèle serverless ne facture que l'usage réel
+(pas de serveur allumé en permanence). Pistes d'optimisation identifiées :
+mise en cache côté front pour réduire les re-fetch, pagination des résultats, et
+passage à un plan Supabase supérieur uniquement si le trafic réel dépasse
+l'hypothèse de pic.
 
 ### Préparation à l’oral
 
