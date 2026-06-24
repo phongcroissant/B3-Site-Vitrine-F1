@@ -29,12 +29,12 @@ Deno.serve(async (req) => {
   }
 
   if (req.method !== "POST") {
-    return json({ error: "Méthode non autorisée" }, 405);
+    return json({ error: "Méthode non autorisée" }, 405, cors);
   }
 
   const authHeader = req.headers.get("Authorization");
   if (!authHeader) {
-    return json({ error: "Authentification requise" }, 401);
+    return json({ error: "Authentification requise" }, 401, cors);
   }
 
   // Client Supabase lié à l'utilisateur appelant (RLS appliquée).
@@ -51,7 +51,7 @@ Deno.serve(async (req) => {
   } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    return json({ error: "Session invalide" }, 401);
+    return json({ error: "Session invalide" }, 401, cors);
   }
 
   // 2. Récupérer le panier en cours de CET utilisateur (RLS garantit la propriété).
@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
     .single();
 
   if (cartError || !cart) {
-    return json({ error: "Aucun panier en cours" }, 404);
+    return json({ error: "Aucun panier en cours" }, 404, cors);
   }
 
   // 3. Charger les lignes + prix réels depuis la base (source de vérité).
@@ -74,20 +74,28 @@ Deno.serve(async (req) => {
     .returns<CartLine[]>();
 
   if (linesError) {
-    return json({ error: "Lecture du panier impossible" }, 500);
+    return json({ error: "Lecture du panier impossible" }, 500, cors);
   }
   if (!lines || lines.length === 0) {
-    return json({ error: "Panier vide" }, 422);
+    return json({ error: "Panier vide" }, 422, cors);
   }
 
   // 4. Valider chaque ligne côté serveur et recalculer le total.
   let total = 0;
   for (const line of lines) {
     if (!Number.isInteger(line.quantite) || line.quantite < 1) {
-      return json({ error: `Quantité invalide pour la ligne ${line.id}` }, 422);
+      return json(
+        { error: `Quantité invalide pour la ligne ${line.id}` },
+        422,
+        cors,
+      );
     }
     if (!line.products || typeof line.products.prix !== "number") {
-      return json({ error: `Produit introuvable (ligne ${line.id})` }, 422);
+      return json(
+        { error: `Produit introuvable (ligne ${line.id})` },
+        422,
+        cors,
+      );
     }
     total += line.products.prix * line.quantite;
   }
@@ -101,7 +109,7 @@ Deno.serve(async (req) => {
     .eq("statut", "en_cours"); // garde-fou anti double-validation
 
   if (updateError) {
-    return json({ error: "Validation de la commande impossible" }, 500);
+    return json({ error: "Validation de la commande impossible" }, 500, cors);
   }
 
   // 6. Réponse : récapitulatif calculé par le serveur uniquement.
@@ -117,7 +125,7 @@ Deno.serve(async (req) => {
       })),
       total,
     },
-  });
+  }, 200, cors);
 });
 
 function json(body: unknown, status = 200, cors: HeadersInit = {}): Response {
