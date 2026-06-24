@@ -31,4 +31,16 @@ export default [
       'react/no-unescaped-entities': 'off',
     },
   },
+  // Scripts de test de charge k6 : runtime distinct exposant des globales
+  // propres (__ENV, __VU, __ITER) que le runtime navigateur ne connaît pas.
+  {
+    files: ["load-tests/**/*.js"],
+    languageOptions: {
+      globals: {
+        __ENV: "readonly",
+        __VU: "readonly",
+        __ITER: "readonly",
+      },
+    },
+  },
 ];
