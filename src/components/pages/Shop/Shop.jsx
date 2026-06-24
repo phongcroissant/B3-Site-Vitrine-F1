@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { useAuth } from "../../../context/AuthContext";
-<<<<<<< HEAD
-=======
 import SearchBar from "../../ui/SearchBar";
->>>>>>> 769a167dba4273087e707590d1061438c337e9e2
 
 export default function Shop() {
   const { user } = useAuth();

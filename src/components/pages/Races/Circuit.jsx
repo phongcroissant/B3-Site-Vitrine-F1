@@ -2,10 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFetch } from "../../../hooks/useFetch";
 import Globe from "./Globe";
-<<<<<<< HEAD
-=======
 import SearchBar from "../../ui/SearchBar";
->>>>>>> 769a167dba4273087e707590d1061438c337e9e2
 
 export default function Circuit() {
   const { loading, error, data } = useFetch(
@@ -13,10 +10,7 @@ export default function Circuit() {
   );
   const races = data?.MRData.RaceTable.Races;
   const [selected, setSelected] = useState(null);
-<<<<<<< HEAD
-=======
   const [search, setSearch] = useState("");
->>>>>>> 769a167dba4273087e707590d1061438c337e9e2
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Une erreur est survenue</p>;
