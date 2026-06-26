@@ -58,7 +58,8 @@ export default function Circuit() {
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <span className="shrink-0 grid place-items-center h-9 w-9 rounded-lg bg-[var(--f1-red)] text-white font-black text-sm shadow-[0_4px_14px_rgba(225,6,0,0.5)]">
+                  <span className="shrink-0 grid place-items-center h-9 w-9 rounded-lg bg-[#e10600] text-white font-black text-sm shadow-[0_4px_14px_rgba(225,6,0,0.5)]">
+                    {" "}
                     {race.round}
                   </span>
                   <div className="flex-1">
