@@ -32,7 +32,7 @@ Le projet Site Vitrine F1 est une application web monopage (SPA) permettant aux 
 - Sources de veille :  
 
 MDN Web Docs & documentation React 19 (hooks, Server Components, transitions)  
-Documentation officielle Vite 7, Tailwind CSS v4, DaisyUI v5  
+Documentation officielle Vite 7, Tailwind CSS v4 
 Supabase Docs – Auth, Row Level Security (RLS), fonctions PostgreSQL (RPC)  
 RGPD – CNIL : recommandations sur la collecte minimale de données, durée de conservation  
 RGAA 4.1 – Référentiel général d'amélioration de l'accessibilité  
@@ -178,7 +178,7 @@ L'architecture choisie repose sur une séparation claire entre le front-end (Rea
 | UI / Framework | React 19 + JSX | Écosystème mature, composants réutilisables, hooks puissants |
 | Build / Bundler | Vite 7 | HMR ultra-rapide, ESM natif, build optimisé | 
 | Routing | React Router v7 | Gestion SPA avec routes imbriquées (Standings) | 
-| Styles | Tailwind CSS v4 + DaisyUI v5 | Utility-first, design system rapide, thèmes | 
+| Styles | Tailwind CSS v4 | Utility-first, design system rapide, thèmes | 
 | BDD & Auth | Supabase (PostgreSQL) | Auth JWT, RLS, RPC, temps réel intégré |
 | APIs externes | OpenF1, Jolpica/Ergast | Données F1 gratuites et open-source |
 | Tests | Vitest + Testing Library | Tests unitaires/composants, mocks intégrés |
@@ -273,13 +273,12 @@ Utilisateur mobile : navigation responsive, menu hamburger, tableaux avec scroll
 
 Compatibilité navigateurs : Chrome, Firefox, Safari (Edge) – via Browserslist + Vite/esbuild
 Responsive mobile-first : breakpoints Tailwind (sm:, md:) – grille adaptive 1 à 4 colonnes
-Thème DaisyUI Dracula (attribut data-theme dans index.html)
 Performance : lazy loading images (loading="lazy"), hook useFetch réutilisable, pas de re-renders inutiles
 SPA routing : vercel.json rewrites pour que React Router gère les URLs en production
 
 - Justification des choix technologiques.
 
-React 19 a été retenu pour sa maturité, son écosystème et la facilité de composition de composants. Tailwind CSS v4 en mode CSS-native élimine la configuration JavaScript et réduit la taille du bundle. DaisyUI fournit un design system prêt à l'emploi (cards, tables, navbars) sans JavaScript supplémentaire. Vite 7 offre un HMR instantané en développement et un build ESM optimisé pour la production.
+React 19 a été retenu pour sa maturité, son écosystème et la facilité de composition de composants. Tailwind CSS v4 en mode CSS-native élimine la configuration JavaScript et réduit la taille du bundle. Vite 7 offre un HMR instantané en développement et un build ESM optimisé pour la production.
 
 ### 2. Maquettes techniques et intégration
 
@@ -366,7 +365,6 @@ Dependency Inversion : les composants consomment useAuth() et useFetch() via abs
 Lazy loading natif sur les images (<img loading="lazy">) – réduit la bande passante
 Bundle optimisé Vite avec tree-shaking automatique – élimine le code mort
 Pas de bibliothèque d'icônes lourde – emojis natifs pour les indicateurs visuels
-DaisyUI chargé uniquement via plugin CSS – pas de JavaScript DaisyUI en bundle
 Aucun tracking tiers (Google Analytics, etc.) – réduction des requêtes réseau
 
 
@@ -386,7 +384,7 @@ src/components/ – tous les composants React (layout/, pages/ avec sous-dossier
 src/context/ – AuthContext.jsx pour la gestion de l'état d'authentification global  
 src/hooks/ – hooks personnalisés (useFetch.js)  
 src/lib/ – initialisation des clients externes (supabase.js)  
-src/css/ – style.css avec imports Tailwind et plugin DaisyUI  
+src/css/ – style.css avec imports Tailwind
 src/setupTests.jsx – configuration Jest-DOM pour les tests  
 
 - les outils de versioning et de build ;
