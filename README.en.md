@@ -38,7 +38,7 @@ comment system.
 | UI / Framework | React 19 + JSX | Mature ecosystem, reusable components, powerful hooks |
 | Build / Bundler | Vite 7 | Instant HMR, native ESM, optimized production build |
 | Routing | React Router v7 | SPA routing with nested routes (Standings) |
-| Styling | Tailwind CSS v4 + DaisyUI v5 | Utility-first, ready-made design system, theming |
+| Styling | Tailwind CSS v4 | Utility-first, ready-made design system, theming |
 | Database & Auth | Supabase (PostgreSQL 17) | JWT auth, Row Level Security, RPC functions |
 | Backend logic | Supabase Edge Function (Deno/TypeScript) | Server-side business logic (checkout) |
 | External APIs | OpenF1, Jolpica/Ergast | Free, open-source F1 data |
@@ -119,7 +119,7 @@ src/
 ├─ context/           AuthContext (global auth state via Supabase)
 ├─ hooks/             useFetch (async fetch with loading/error/data states)
 ├─ lib/               supabase.js (Supabase client initialization)
-└─ css/               Tailwind + DaisyUI styles
+└─ css/               Tailwind
 supabase/
 ├─ migrations/        Versioned SQL schema, RPC and RLS policies
 └─ functions/         Edge Functions (checkout) + shared helpers

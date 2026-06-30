@@ -38,7 +38,7 @@ circuits — en plus d'une boutique en ligne et d'un système de commentaires pa
 | UI / Framework | React 19 + JSX | Écosystème mature, composants réutilisables, hooks puissants |
 | Build / Bundler | Vite 7 | HMR instantané, ESM natif, build de production optimisé |
 | Routing | React Router v7 | Routing SPA avec routes imbriquées (Standings) |
-| Styles | Tailwind CSS v4 + DaisyUI v5 | Utility-first, design system prêt à l'emploi, thèmes |
+| Styles | Tailwind CSS v4 | Utility-first, design system prêt à l'emploi, thèmes |
 | BDD & Auth | Supabase (PostgreSQL 17) | Auth JWT, Row Level Security, fonctions RPC |
 | Logique backend | Supabase Edge Function (Deno/TypeScript) | Logique métier côté serveur (checkout) |
 | APIs externes | OpenF1, Jolpica/Ergast | Données F1 gratuites et open-source |
@@ -120,7 +120,7 @@ src/
 ├─ context/           AuthContext (état d'authentification global via Supabase)
 ├─ hooks/             useFetch (fetch asynchrone avec états loading/error/data)
 ├─ lib/               supabase.js (initialisation du client Supabase)
-└─ css/               Styles Tailwind + DaisyUI
+└─ css/               Styles Tailwind
 supabase/
 ├─ migrations/        Schéma SQL versionné, RPC et politiques RLS
 └─ functions/         Edge Functions (checkout) + helpers partagés
