@@ -157,13 +157,14 @@ Doit démontrer :
 ## Schéma d'architecture
 
 ```
-Utilisateur → Vercel CDN → React SPA (Vite build) → [React Router] → Composants pages
-                                             ↓
-                          Supabase (Auth JWT + PostgreSQL + RLS)
-                                             ↓
-                          Tables : users | comments | products | cart | carts_products
-                                             ↑
-                          APIs externes : OpenF1 API / Jolpi Ergast API
+Utilisateur → Vercel CDN (fichiers statiques) → React SPA (Vite + React Router)
+                                                   │
+                                   ┌───────────────┴───────────────┐
+                                   ▼                               ▼
+                        APIs F1 externes                    Supabase
+                     OpenF1 · Jolpica-Ergast          Auth JWT · PostgreSQL · RLS
+                        (lecture seule)         users · comments · products · cart · carts_products
+                          
 ```
 
 
@@ -474,8 +475,97 @@ Elle doit montrer :
 À produire :
 
 - MCD et schéma relationnel ;
+
+```
+auth.users (Supabase Auth)
+      │ 1
+      │
+      │ 1
+    users (id PK/FK, username)
+      │ 1
+      ├──────────────┐
+      │ N            │ N
+   comments        cart
+(id_utilisateur FK)  │ 1
+                      │
+                      │ N
+              carts_products (id_panier FK, id_produit FK)
+                      │ N
+                      │
+                      │ 1
+                  products (id, libelle, prix)
+```
+
 - Relations et types de champs ;
+
+| Table | Champ | Type | Contrainte |
+|---|---|---|---|
+| `users` | `id` | `uuid` | PK, FK → `auth.users(id)` ON DELETE CASCADE |
+| `users` | `username` | `text` | UNIQUE, NOT NULL |
+| `products` | `id` | `serial` | PK |
+| `products` | `libelle` | `text` | NOT NULL |
+| `products` | `prix` | `numeric(10,2)` | NOT NULL |
+| `comments` | `id` | `serial` | PK |
+| `comments` | `id_utilisateur` | `uuid` | FK → `users(id)` ON DELETE CASCADE |
+| `comments` | `commentaire` | `text` | NOT NULL |
+| `comments` | `id_course` | `varchar(30)` | NOT NULL (identifiant de course venant de l'API externe) |
+| `cart` | `id` | `serial` | PK |
+| `cart` | `id_utilisateur` | `uuid` | FK → `users(id)` ON DELETE CASCADE |
+| `cart` | `statut` | `enum cart_statut` | NOT NULL, défaut `'en_cours'`, valeurs `en_cours`\|`valide` |
+| `cart` | `created_at` | `timestamptz` | défaut `now()` |
+| `carts_products` | `id` | `serial` | PK |
+| `carts_products` | `id_panier` | `int` | FK → `cart(id)` ON DELETE CASCADE |
+| `carts_products` | `id_produit` | `int` | FK → `products(id)` ON DELETE CASCADE |
+| `carts_products` | `quantite` | `int` | NOT NULL, défaut `1` |
+| `carts_products` | — | — | UNIQUE(`id_panier`, `id_produit`) |
+
+Cardinalités : un utilisateur a 0..1 panier actif et 0..N commentaires ; un panier
+contient 0..N lignes `carts_products`, chaque ligne référant un produit unique du
+panier (contrainte `unique(id_panier, id_produit)`) ; un produit peut apparaître
+dans N paniers.
+
 - Justification des choix.
+
+**`id` = `auth.uid()` plutôt qu'un id applicatif séparé.** La table `users` ne
+duplique pas l'identité : son `id` référence directement `auth.users(id)` avec
+`ON DELETE CASCADE`. Cela évite la désynchronisation entre l'utilisateur Auth et
+son profil applicatif, et garantit la suppression en cascade des données liées
+(panier, commentaires) si le compte est supprimé.
+
+**Table `cart` séparée de `carts_products` (et non un JSON dans `cart`).** Le
+panier est modélisé de façon relationnelle (une ligne par produit) plutôt que
+stocké en JSONB pour pouvoir exploiter les contraintes SQL natives : clé unique
+`(id_panier, id_produit)` qui empêche les doublons de lignes, clés étrangères
+avec `ON DELETE CASCADE`, et requêtes/agrégations simples (`SUM(quantite * prix)`)
+sans parsing applicatif.
+
+**`statut` en `enum` plutôt qu'en `text` ou `boolean`.** Le panier suit un cycle
+de vie à deux états (`en_cours` → `valide`) géré exclusivement côté serveur par
+l'Edge Function `checkout` (cf. Bloc 3.1). Un type `enum` PostgreSQL empêche
+toute valeur invalide au niveau base de données, contrainte qu'un simple `text`
+ne donnerait pas.
+
+**`prix` en `numeric(10,2)` plutôt qu'en `float`.** Les montants monétaires
+utilisent un type à précision fixe pour éviter les erreurs d'arrondi binaire des
+flottants — indispensable pour le recalcul serveur du total de commande.
+
+**`id_course` en `varchar(30)` plutôt qu'une clé étrangère vers une table
+`races`.** Les données de courses proviennent d'APIs externes (OpenF1,
+Jolpica-Ergast) et ne sont pas stockées en base : l'identifiant de course (round)
+est donc une simple référence texte, sans intégrité référentielle SQL possible
+puisque la table de référence n'existe pas côté Supabase.
+
+**Suppressions en cascade (`ON DELETE CASCADE`) systématiques sur les FK vers
+`users`.** Conformité RGPD : la suppression d'un compte utilisateur entraîne
+automatiquement la suppression de son panier et de ses commentaires, sans
+nécessiter de logique applicative supplémentaire ni laisser de données
+orphelines.
+
+**Row Level Security plutôt que filtrage applicatif.** Le schéma relationnel
+seul ne suffit pas à isoler les données par utilisateur côté client (clé `anon`
+publique) : la sécurité d'accès est donc reportée sur des politiques RLS
+PostgreSQL (cf. Bloc 3.3), qui s'appliquent au niveau base de données et ne
+peuvent pas être contournées par un appel API direct.
 
 ### 3. Sécurité et conformité
 
