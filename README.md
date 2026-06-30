@@ -16,14 +16,6 @@ Démontrer la capacité à analyser un besoin, à structurer un projet digital, 
 
 ### 1. Note de veille
 
-Elle doit montrer :
-
-- l’existence d’un processus structuré de veille (technologique, juridique, concurrentielle, environnementale) ;
-- l’identification des évolutions technologiques et réglementaires (RGPD, CNIL, RSE, RGAA) ;
-- la justification des choix techniques et d’hébergement au regard de la performance, de la sécurité et de l’éco‑responsabilité ;
-- la prise en compte des recommandations du CIGREF et des problématiques d’obsolescence.
-
-À produire :
 
 - Objectifs du projet : 
 
@@ -55,14 +47,6 @@ Accessibilité : skip-link, attributs aria-label sur la nav, balises sémantique
 
 ### 2. Analyse des besoins et benchmark
 
-Doit démontrer :
-
-- la compréhension du marché, de la cible et de la concurrence ;
-- l’utilisation d’outils type SWOT et PESTEL ;
-- l’analyse de la stratégie webmarketing ;
-- la prise en compte des situations de handicap.
-
-À produire :
 
 - Présentation du client :  
 
@@ -144,13 +128,6 @@ Déploiement continu : Vercel + vercel.json rewrites pour SPA routing
 
 ### 3. Cadrage technique
 
-Doit démontrer :
-
-- le choix argumenté d’une architecture (MERN, MEAN, etc.) :
-- la cohérence de la stack technique ;
-- la prise en compte de la sécurité, de l’éthique et de l’accessibilité.
-
-À produire :
 
 - Schéma d’architecture :  
 
@@ -229,18 +206,6 @@ Routes protégées côté client : ProtectedRoute redirige vers /login si non au
 PublicRoute redirige vers / si déjà connecté (évite double-inscription)
 Clé anon Supabase exposée côté client (RLS défense en profondeur)
 
-
-
-### Préparation à l’oral
-
-Présenter :
-
-- la démarche d’analyse
-- la veille
-- l’architecture
-- les choix IA
-- la sécurité et l’accessibilité
-
 ---
 
 ## BLOC 2 – Développer la partie Front‑End d’une solution digitale
@@ -255,13 +220,6 @@ Démontrer la capacité à concevoir, intégrer et livrer une interface utilisat
 
 ### 1. Analyse des usages et contraintes
 
-Elle doit montrer :
-
-- l’identification des usages de la solution (profils utilisateurs, parcours, objectifs) ;
-- l’analyse des contraintes techniques et graphiques ;
-- la justification des choix de plateformes, de langages et de frameworks.
-
-À produire :
 
 - Description des profils utilisateurs et des parcours ;
 
@@ -281,14 +239,6 @@ SPA routing : vercel.json rewrites pour que React Router gère les URLs en produ
 React 19 a été retenu pour sa maturité, son écosystème et la facilité de composition de composants. Tailwind CSS v4 en mode CSS-native élimine la configuration JavaScript et réduit la taille du bundle. Vite 7 offre un HMR instantané en développement et un build ESM optimisé pour la production.
 
 ### 2. Maquettes techniques et intégration
-
-Elle doit montrer :
-
-- la maîtrise de HTML, CSS, JavaScript et des frameworks (React, Angular…) ;
-- le respect du cahier des charges, des règles d’ergonomie et du RGAA ;
-- la cohérence de la structure des pages.
-
-À produire :
 
 - Maquettes ou prototypes ;
 - Pages intégrées ;
@@ -343,8 +293,6 @@ export function useFetch(url) {
 
 ### 3. Qualité du code
 
-Elle doit montrer :
-
 - l’application des normes et standards ;
 
 ESLint 9 avec plugin react – détection des erreurs JSX, props-types, hooks rules
@@ -368,15 +316,7 @@ Pas de bibliothèque d'icônes lourde – emojis natifs pour les indicateurs vis
 Aucun tracking tiers (Google Analytics, etc.) – réduction des requêtes réseau
 
 
-À produire :
-
-- Extraits de code commentés ;
-- Résultats de tests de compatibilité ;
-- Justification des bonnes pratiques.
-
 ### 4. Documentation de la chaîne front‑end
-
-Elle doit montrer :
 
 - l’organisation du code ;
 
@@ -401,15 +341,6 @@ npm run test – Vitest avec jsdom, setup Testing Library, coverage sur Login et
 npm run build – vérification que le build de production ne génère pas d'erreur  
 CI bloquante : le merge est impossible si lint ou build échouent  
 
-
-### Préparation à l’oral
-
-Présenter :
-
-- la maquette et les choix UX/UI ;
-- les choix technologiques ;
-- la façon dont l’accessibilité, la sécurité et la performance ont été prises en compte.
-
 ---
 
 ## BLOC 3 – Développer la partie Back‑End d’une solution digitale
@@ -424,8 +355,6 @@ Démontrer la capacité à concevoir, développer, sécuriser, tester et documen
 
 ### 1. Environnement et architecture
 
-Elle doit montrer :
-
 - le choix justifié des technologies, plateformes et langages ;
 
 Le back-end repose sur Supabase, un Backend-as-a-Service open-source construit sur PostgreSQL. Cette architecture élimine la nécessité d'un serveur applicatif dédié tout en offrant des fonctionnalités avancées : authentification JWT, Row Level Security, fonctions PostgreSQL (RPC) et API REST auto-générée.
@@ -436,13 +365,6 @@ API : PostgREST auto-généré par Supabase – endpoints REST pour chaque table
 RPC : fonctions PL/pgSQL exposées via supabase.rpc() – ex. upsert_cart_product  
 CLI Supabase : migrations versionnées, seed, configuration locale (config.toml)  
 Hébergement : cloud Supabase (SaaS) – région configurable, backups automatiques  
-
-- la cohérence de l’architecture logicielle.
-
-À produire :
-
-- Description du framework, de l’API et du cloud;
-- Schéma d’architecture.
 
 #### Couche backend applicative – Supabase Edge Functions
 
@@ -463,14 +385,6 @@ Appelée côté front via `supabase.functions.invoke("checkout")` depuis la page
 panier. Déploiement : `npx supabase functions deploy checkout`.
 
 ### 2. Base de données
-
-Elle doit montrer :
-
-- la conception d’un schéma relationnel optimisé ;
-- l’intégration de l’ORM ;
-- la sécurité et la conformité.
-
-À produire :
 
 - MCD et schéma relationnel ;
 
@@ -567,8 +481,6 @@ peuvent pas être contournées par un appel API direct.
 
 ### 3. Sécurité et conformité
 
-Elle doit montrer :
-
 - l’authentification et l’autorisation ;
 
 Supabase Auth : inscription par email/password, hashage bcrypt, JWT signé côté serveur
@@ -596,8 +508,6 @@ minimum_password_length = 6 (Supabase) + 8 (validation front)
 
 ### 4. Tests et maintenance
 
-Elle doit montrer :
-
 - la mise en place de tests unitaires et automatisés ;
 - le monitoring et la journalisation.
 
@@ -617,16 +527,6 @@ setupFiles : src/setupTests.jsx importe jest-dom automatiquement
 
 Elle doit être rédigée en français et en anglais.
 
-### Préparation à l’oral
-
-Présenter :
-
-- l’architecture back‑end ;
-- la sécurité ;
-- la base de données ;
-- une partie du projet en anglais ;
-- une revue de code.
-
 ---
 
 ## BLOC 4 – Piloter un projet DevOps de développement
@@ -640,20 +540,6 @@ C21 à C23 Environnement collaboratif et agile – C24 à C26 Pilotage – C27 T
 Démontrer la capacité à organiser, piloter et optimiser un projet DevOps en intégrant collaboration, agilité, performance, sécurité et amélioration continue.
 
 ### 1. Environnement collaboratif et SCM
-
-Il doit montrer :
-
-- la cartographie des processus du projet (de la demande client au déploiement) ;
-- le déploiement d’un système de gestion de code source distribué (Git) ;
-- la définition d’un workflow (branches, merge, revue de code, gestion des bugs) ;
-- le paramétrage des outils collaboratifs (tickets, documentation, CI/CD).
-
-À produire :
-
-- Schéma des processus ;
-- Dépôt Git avec historique ;
-- Description du workflow ;
-- Accès à la documentation.
 
 Workflow Git implémenté :  
 
@@ -672,39 +558,7 @@ npm ci – installation déterministe des dépendances (package-lock.json)
 npm run lint – vérification ESLint (bloquant si erreurs)  
 npm run build – build Vite de production (bloquant si erreurs)
 
-
-
-### 2. Gestion agile et pilotage d’équipe
-
-Elle doit montrer :
-
-- l’identification des ressources humaines par tâche ;
-- la priorisation du backlog ;
-- la planification des sprints ;
-- l’animation des réunions (daily, review, rétrospective) ;
-- la rédaction des comptes rendus.
-
-À produire :
-
-- Backlog ;
-- Planning des sprints ;
-- Comptes rendus ;
-- Indicateurs de suivi.
-
 ### 3. Tests de performance et montée en charge
-
-Elle doit montrer :
-
-- la définition d’hypothèses de trafic (utilisateurs, pages, durée, volume) ;
-- l’utilisation d’outils (JMeter, Gatling, Siege) ;
-- la mesure des indicateurs clés (temps de réponse, débit, erreurs, ressources) ;
-- l’analyse des goulots d’étranglement.
-
-À produire :
-
-- Scénarios de test ;
-- Résultats ;
-- Analyse.
 
 Des tests de charge ont été mis en place avec **k6** (Grafana Labs). Les
 scénarios, scripts et résultats détaillés sont versionnés dans le dossier
@@ -748,11 +602,6 @@ qui sature en premier.
 
 ### 4. Autoscaling et optimisation
 
-Elle doit montrer :
-
-- la mise en place de règles d’autoscaling ;
-- la capacité à maintenir la performance sous charge ;
-- l’optimisation des coûts.
 
 L'architecture étant **entièrement serverless**, il n'y a pas de serveur à
 dimensionner manuellement : la montée en charge est assurée automatiquement par
@@ -772,14 +621,3 @@ les plateformes.
 mise en cache côté front pour réduire les re-fetch, pagination des résultats, et
 passage à un plan Supabase supérieur uniquement si le trafic réel dépasse
 l'hypothèse de pic.
-
-### Préparation à l’oral
-
-Présenter :
-
-- l’organisation DevOps ;
-- la gestion agile ;
-- les résultats des tests de charge ;
-- l’autoscaling ;
-- la démarche d’amélioration continue.
-Affichage de Livret candidat – RNCP Concepteur Développeur Web Full Stack.md
