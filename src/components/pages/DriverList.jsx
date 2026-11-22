@@ -1,23 +1,24 @@
-import { useState } from "react";
-import { useFetch } from "../../hooks/useFetch";
-import SearchBar from "../ui/SearchBar";
+"use client";
 
-export default function DriverList() {
-  const { loading, error, data } = useFetch(
-    "https://api.openf1.org/v1/drivers?session_key=latest",
-  );
+import { useState } from "react";
+import SearchBar from "../ui/SearchBar";
+import PageHeading from "../ui/PageHeading";
+import { ErrorMessage, EmptyMessage } from "../ui/DataMessage";
+
+// La liste est chargée côté serveur (src/app/driverList/page.jsx) ;
+// ce composant client ne gère que la recherche.
+export default function DriverList({ drivers, error }) {
   const [search, setSearch] = useState("");
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Une erreur est survenue</p>;
-  if (!data || data.length === 0) return <p>Aucune donnée</p>;
+  if (error) return <ErrorMessage />;
+  if (!drivers || drivers.length === 0) return <EmptyMessage />;
 
-  const drivers = [...data].sort((a, b) =>
+  const sorted = [...drivers].sort((a, b) =>
     a.team_name.localeCompare(b.team_name),
   );
 
   const term = search.toLowerCase();
-  const filteredDrivers = drivers.filter(
+  const filteredDrivers = sorted.filter(
     (driver) =>
       driver.full_name.toLowerCase().includes(term) ||
       driver.team_name.toLowerCase().includes(term),
@@ -25,11 +26,7 @@ export default function DriverList() {
 
   return (
     <div className="max-w-5xl mx-auto mt-10 px-4 f1-fade-up">
-      <div className="f1-section-head">
-        <p className="f1-eyebrow">Formula 1</p>
-        <h2 className="f1-title text-4xl md:text-6xl mb-4">Les pilotes</h2>
-        <div className="f1-accent-line max-w-xs mx-auto" />
-      </div>
+      <PageHeading>Les pilotes</PageHeading>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <SearchBar
@@ -57,9 +54,9 @@ export default function DriverList() {
               />
             </div>
             <div className="p-5 border-t border-white/5">
-              <h3 className="text-lg font-bold text-white">
+              <h2 className="text-lg font-bold text-white">
                 {driver.full_name}
-              </h3>
+              </h2>
               <p className="text-sm text-white/60 mt-1">
                 <span className="text-red-500 font-semibold">Écurie</span> ·{" "}
                 {driver.team_name}

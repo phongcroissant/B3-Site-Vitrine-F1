@@ -1,6 +1,9 @@
+"use client";
+
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -10,7 +13,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -20,31 +23,50 @@ export default function Register() {
       return setError("Les mots de passe ne correspondent pas.");
     if (password.length < 8) return setError("8 caractères minimum.");
 
+    const username = pseudo.trim();
+    if (!username) return setError("Le pseudo est obligatoire.");
+
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    // 1. Vérifier que le pseudo est libre, pour afficher un message clair
+    const { data: available, error: checkError } = await supabase.rpc(
+      "username_available",
+      { p_username: username },
+    );
 
-    if (error) {
-      setError(error.message);
+    if (checkError) {
+      setError(checkError.message);
       setLoading(false);
       return;
     }
 
-    if (data.user) {
-      const { error: insertError } = await supabase.from("users").insert({
-        id: data.user.id,
-        username: pseudo,
-      });
+    if (!available) {
+      setError("Ce pseudo est déjà utilisé.");
+      setLoading(false);
+      return;
+    }
 
-      if (insertError) {
-        setError(insertError.message);
-        setLoading(false);
-        return;
-      }
+    // 2. Créer le compte : le profil est créé par le trigger on_auth_user_created,
+    //    dans la même transaction. Si ça échoue, aucun compte n'est créé.
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { username } },
+    });
+
+    if (error) {
+      // Cas rare : le pseudo a été pris entre la vérification et l'inscription
+      setError(
+        error.message === "Database error saving new user"
+          ? "Ce pseudo est déjà utilisé."
+          : error.message,
+      );
+      setLoading(false);
+      return;
     }
 
     setLoading(false);
-    navigate("/");
+    router.push("/");
   };
 
   const inputClass = "f1-input";
@@ -136,9 +158,9 @@ export default function Register() {
 
         <p className="text-center text-sm text-white/50 mt-6">
           Déjà un compte ?{" "}
-          <a href="/login" className="f1-link">
+          <Link href="/login" className="f1-link">
             Se connecter
-          </a>
+          </Link>
         </p>
       </div>
     </div>

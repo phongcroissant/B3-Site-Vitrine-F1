@@ -37,10 +37,10 @@ Get-Content $envFile | Where-Object { $_ -match '^\s*[^#].*=' } | ForEach-Object
 
 Write-Host "k6      : $k6"
 Write-Host "Script  : $Script"
-Write-Host "Supabase: $($cfg['VITE_SUPABASE_URL'])"
+Write-Host "Supabase: $($cfg['NEXT_PUBLIC_SUPABASE_URL'])"
 Write-Host "Lancement du test de charge...`n"
 
 & $k6 run `
-  --env VITE_SUPABASE_URL=$($cfg['VITE_SUPABASE_URL']) `
-  --env VITE_SUPABASE_ANON_KEY=$($cfg['VITE_SUPABASE_ANON_KEY']) `
+  --env VITE_SUPABASE_URL=$($cfg['NEXT_PUBLIC_SUPABASE_URL']) `
+  --env VITE_SUPABASE_ANON_KEY=$($cfg['NEXT_PUBLIC_SUPABASE_ANON_KEY']) `
   $Script

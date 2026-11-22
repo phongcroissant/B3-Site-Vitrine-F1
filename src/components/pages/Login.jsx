@@ -1,6 +1,9 @@
+"use client";
+
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -8,7 +11,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,7 +30,7 @@ export default function Login() {
     }
 
     setLoading(false);
-    navigate("/");
+    router.push("/");
   };
 
   const inputClass = "f1-input";
@@ -93,9 +96,9 @@ export default function Login() {
 
         <p className="text-center text-sm text-white/50 mt-6">
           Pas encore de compte ?{" "}
-          <a href="/register" className="f1-link">
+          <Link href="/register" className="f1-link">
             Créer un compte
-          </a>
+          </Link>
         </p>
       </div>
     </div>

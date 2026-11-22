@@ -2,20 +2,20 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Register from "./Register";
 
-const { mockNavigate, mockSignUp, mockInsert } = vi.hoisted(() => ({
+const { mockNavigate, mockSignUp, mockRpc } = vi.hoisted(() => ({
   mockNavigate: vi.fn(),
   mockSignUp: vi.fn(),
-  mockInsert: vi.fn(),
+  mockRpc: vi.fn(),
 }));
 
-vi.mock("react-router-dom", () => ({
-  useNavigate: () => mockNavigate,
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: mockNavigate }),
 }));
 
 vi.mock("../../lib/supabase", () => ({
   supabase: {
     auth: { signUp: mockSignUp },
-    from: () => ({ insert: mockInsert }),
+    rpc: mockRpc,
   },
 }));
 
@@ -54,16 +54,34 @@ describe("Register", () => {
   });
 
   it("redirige vers '/' après une inscription réussie", async () => {
+    mockRpc.mockResolvedValue({ data: true, error: null });
     mockSignUp.mockResolvedValue({
       data: { user: { id: "uid-123" } },
       error: null,
     });
-    mockInsert.mockResolvedValue({ error: null });
 
     render(<Register />);
     fillForm();
     fireEvent.click(screen.getByRole("button"));
 
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/"));
+    expect(mockSignUp).toHaveBeenCalledWith({
+      email: "test@example.com",
+      password: "motdepasse123",
+      options: { data: { username: "monpseudo" } },
+    });
+  });
+
+  it("refuse un pseudo déjà utilisé sans créer de compte", async () => {
+    mockRpc.mockResolvedValue({ data: false, error: null });
+
+    render(<Register />);
+    fillForm({ pseudo: "phong" });
+    fireEvent.click(screen.getByRole("button"));
+
+    expect(
+      await screen.findByText("Ce pseudo est déjà utilisé."),
+    ).toBeInTheDocument();
+    expect(mockSignUp).not.toHaveBeenCalled();
   });
 });

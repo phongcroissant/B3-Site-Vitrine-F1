@@ -1,12 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import DriverList from "./DriverList";
-
-const { mockUseFetch } = vi.hoisted(() => ({ mockUseFetch: vi.fn() }));
-
-vi.mock("../../hooks/useFetch", () => ({
-  useFetch: (...args) => mockUseFetch(...args),
-}));
 
 const drivers = [
   {
@@ -24,30 +18,24 @@ const drivers = [
 ];
 
 describe("DriverList", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("affiche le chargement", () => {
-    mockUseFetch.mockReturnValue({ loading: true, error: false, data: null });
-    render(<DriverList />);
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
-  });
-
   it("affiche une erreur", () => {
-    mockUseFetch.mockReturnValue({ loading: false, error: true, data: null });
-    render(<DriverList />);
+    render(<DriverList drivers={[]} error={true} />);
     expect(screen.getByText("Une erreur est survenue")).toBeInTheDocument();
   });
 
+  it("affiche un message si aucun pilote", () => {
+    render(<DriverList drivers={[]} error={false} />);
+    expect(screen.getByText("Aucune donnée")).toBeInTheDocument();
+  });
+
   it("affiche tous les pilotes par défaut", () => {
-    mockUseFetch.mockReturnValue({ loading: false, error: false, data: drivers });
-    render(<DriverList />);
+    render(<DriverList drivers={drivers} error={false} />);
     expect(screen.getByText("Max Verstappen")).toBeInTheDocument();
     expect(screen.getByText("Lewis Hamilton")).toBeInTheDocument();
   });
 
   it("filtre les pilotes selon la recherche (par nom)", () => {
-    mockUseFetch.mockReturnValue({ loading: false, error: false, data: drivers });
-    render(<DriverList />);
+    render(<DriverList drivers={drivers} error={false} />);
 
     fireEvent.change(
       screen.getByPlaceholderText("Rechercher un pilote ou une écurie..."),
@@ -59,8 +47,7 @@ describe("DriverList", () => {
   });
 
   it("filtre les pilotes selon la recherche (par écurie)", () => {
-    mockUseFetch.mockReturnValue({ loading: false, error: false, data: drivers });
-    render(<DriverList />);
+    render(<DriverList drivers={drivers} error={false} />);
 
     fireEvent.change(
       screen.getByPlaceholderText("Rechercher un pilote ou une écurie..."),
