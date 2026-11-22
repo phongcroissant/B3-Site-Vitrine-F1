@@ -29,35 +29,43 @@ export default function Shop() {
   async function addToCart(productId) {
     setAddingId(productId);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
 
-    // 1. Récupérer ou créer le panier en cours
-    let { data: cart } = await supabase
-      .from("cart")
-      .select("id")
-      .eq("id_utilisateur", user.id)
-      .eq("statut", "en_cours")
-      .single();
-
-    if (!cart) {
-      const { data: newCart } = await supabase
+      // 1. Récupérer ou créer le panier en cours
+      let { data: cart, error: selectError } = await supabase
         .from("cart")
-        .insert({ id_utilisateur: user.id })
         .select("id")
-        .single();
-      cart = newCart;
+        .eq("id_utilisateur", user.id)
+        .eq("statut", "en_cours")
+        .maybeSingle();
+      if (selectError) throw selectError;
+
+      if (!cart) {
+        const { data: newCart, error: insertError } = await supabase
+          .from("cart")
+          .insert({ id_utilisateur: user.id })
+          .select("id")
+          .single();
+        if (insertError) throw insertError;
+        cart = newCart;
+      }
+
+      // 2. Ajouter le produit ou incrémenter la quantité via RPC
+      const { error: rpcError } = await supabase.rpc("upsert_cart_product", {
+        p_id_panier: cart.id,
+        p_id_produit: productId,
+      });
+      if (rpcError) throw rpcError;
+    } catch (err) {
+      console.error("Ajout au panier impossible :", err);
+      setError(err.message ?? "Impossible d'ajouter le produit au panier.");
+    } finally {
+      setAddingId(null);
     }
-
-    // 2. Ajouter le produit ou incrémenter la quantité via RPC
-    await supabase.rpc("upsert_cart_product", {
-      p_id_panier: cart.id,
-      p_id_produit: productId,
-    });
-
-    setAddingId(null);
   }
 
   if (loading)

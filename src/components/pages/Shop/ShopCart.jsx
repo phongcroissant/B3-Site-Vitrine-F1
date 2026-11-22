@@ -13,46 +13,51 @@ export default function ShopCart() {
   }, []);
 
   async function getOrCreateCart(userId) {
-    let { data: cart } = await supabase
+    // maybeSingle : renvoie null sans erreur 406 quand aucun panier n'existe
+    const { data: cart, error: selectError } = await supabase
       .from("cart")
       .select("id")
       .eq("id_utilisateur", userId)
       .eq("statut", "en_cours")
+      .maybeSingle();
+
+    if (selectError) throw selectError;
+    if (cart) return cart;
+
+    const { data: newCart, error: insertError } = await supabase
+      .from("cart")
+      .insert({ id_utilisateur: userId })
+      .select("id")
       .single();
 
-    if (!cart) {
-      const { data: newCart } = await supabase
-        .from("cart")
-        .insert({ id_utilisateur: userId })
-        .select("id")
-        .single();
-      cart = newCart;
-    }
-
-    return cart;
+    if (insertError) throw insertError;
+    return newCart;
   }
 
   async function fetchCart() {
     setLoading(true);
+    setError(null);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const cart = await getOrCreateCart(user.id);
+
+      const { data, error } = await supabase
+        .from("carts_products")
+        .select("id, quantite, products(id, libelle, prix)")
+        .eq("id_panier", cart.id);
+
+      if (error) throw error;
+      setCartItems(data);
+    } catch (err) {
+      setError(err.message ?? "Impossible de charger le panier.");
+    } finally {
       setLoading(false);
-      return;
     }
-    const cart = await getOrCreateCart(user.id);
-
-    const { data, error } = await supabase
-      .from("carts_products")
-      .select("id, quantite, products(id, libelle, prix)")
-      .eq("id_panier", cart.id);
-
-    if (error) setError(error.message);
-    else setCartItems(data);
-
-    setLoading(false);
   }
 
   async function updateQuantity(itemId, newQuantite) {
