@@ -1,20 +1,20 @@
+"use client";
+
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useFetch } from "../../../hooks/useFetch";
+import Link from "next/link";
 import Globe from "./Globe";
 import SearchBar from "../../ui/SearchBar";
+import PageHeading from "../../ui/PageHeading";
+import { ErrorMessage, EmptyMessage } from "../../ui/DataMessage";
 
-export default function Circuit() {
-  const { loading, error, data } = useFetch(
-    "https://api.jolpi.ca/ergast/f1/current/",
-  );
-  const races = data?.MRData.RaceTable.Races;
+// Le calendrier est chargé côté serveur (src/app/circuit/page.jsx) ;
+// ce composant client gère le globe, la sélection et la recherche.
+export default function Circuit({ races, error }) {
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Une erreur est survenue</p>;
-  if (!races || races.length === 0) return <p>Aucune donnée</p>;
+  if (error) return <ErrorMessage />;
+  if (!races || races.length === 0) return <EmptyMessage />;
 
   const filteredRaces = races.filter((race) => {
     const term = search.toLowerCase();
@@ -27,11 +27,7 @@ export default function Circuit() {
 
   return (
     <div className="max-w-6xl mx-auto mt-10 px-4 f1-fade-up">
-      <div className="f1-section-head">
-        <p className="f1-eyebrow">Formula 1</p>
-        <h2 className="f1-title text-4xl md:text-6xl mb-4">Les circuits</h2>
-        <div className="f1-accent-line max-w-xs mx-auto" />
-      </div>
+      <PageHeading>Les circuits</PageHeading>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="lg:sticky lg:top-6 self-start">
@@ -63,9 +59,9 @@ export default function Circuit() {
                     {race.round}
                   </span>
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-white">
+                    <h2 className="text-lg font-bold text-white">
                       {race.raceName}
-                    </h3>
+                    </h2>
                     <p className="text-sm text-white/60 mt-1">
                       <span className="text-red-500 font-semibold">Pays</span> ·{" "}
                       {race.Circuit.Location.country}
@@ -75,7 +71,7 @@ export default function Circuit() {
                       {race.Circuit.Location.locality}
                     </p>
                     <Link
-                      to={`/raceResult/${race.round}`}
+                      href={`/raceResult/${race.round}`}
                       onClick={(e) => e.stopPropagation()}
                       className="f1-link inline-block mt-3 text-sm"
                     >

@@ -1,7 +1,7 @@
 // Origines autorisées à appeler les Edge Functions (liste blanche).
 const ALLOWED_ORIGINS = [
   "https://b3-site-vitrine-f1.vercel.app",
-  "http://localhost:5173",
+  "http://localhost:3000", // serveur de développement Next.js
 ];
 
 // Construit les en-têtes CORS en fonction de l'origine de la requête.

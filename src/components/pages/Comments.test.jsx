@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
 import CommentSection from "./Comments";
 
 const { mockFrom, mockInsert, mockUseAuth, orderResult } = vi.hoisted(() => ({
@@ -32,11 +31,7 @@ function setupSupabase() {
 }
 
 function renderCmp() {
-  return render(
-    <MemoryRouter>
-      <CommentSection idRace="monaco" />
-    </MemoryRouter>,
-  );
+  return render(<CommentSection idRace="monaco" />);
 }
 
 describe("CommentSection", () => {

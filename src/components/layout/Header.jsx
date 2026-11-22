@@ -1,27 +1,35 @@
-import { NavLink } from "react-router-dom";
-import { useState } from "react";
-import { supabase } from "../../lib/supabase";
-import { useAuth } from "../../context/AuthContext";
-import imgUrl from "../../img/tracker.webp";
+"use client";
 
-const linkClass = ({ isActive }) =>
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
+
+const NAV_LINKS = [
+  { href: "/", label: "Accueil" },
+  { href: "/driverList", label: "Pilotes" },
+  { href: "/circuit", label: "Circuit" },
+  { href: "/standings", label: "Classement" },
+  { href: "/shop", label: "Shopping" },
+];
+
+const linkClass = (isActive) =>
   `relative px-3 py-1.5 text-sm font-semibold uppercase tracking-wide rounded-lg transition-colors ${
     isActive
       ? "text-white bg-[var(--f1-black)]/15 shadow-[inset_0_-2px_0_var(--f1-red)]"
       : "text-white/60 hover:text-white"
   }`;
 
-const NAV_LINKS = [
-  { to: "/", label: "Accueil" },
-  { to: "/driverList", label: "Pilotes" },
-  { to: "/circuit", label: "Circuit" },
-  { to: "/standings", label: "Classement" },
-  { to: "/shop", label: "Shopping" },
-];
-
 export default function Header() {
   const { user } = useAuth();
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Équivalent du NavLink de React Router : lien actif selon l'URL courante.
+  const isActive = (href) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -32,18 +40,30 @@ export default function Header() {
 
   const authLinks = user
     ? [
-        { to: "/shopCart", label: "Panier" },
-        { to: "/orders", label: "Mes commandes" },
+        { href: "/shopCart", label: "Panier" },
+        { href: "/orders", label: "Mes commandes" },
       ]
     : [
-        { to: "/register", label: "Inscription" },
-        { to: "/login", label: "Connexion" },
+        { href: "/register", label: "Inscription" },
+        { href: "/login", label: "Connexion" },
       ];
 
   const allLinks = [...NAV_LINKS, ...authLinks];
 
   const logoutClass =
     "px-3 py-1.5 text-sm font-semibold uppercase tracking-wide rounded-lg border border-[var(--f1-red)]/50 text-red-500 hover:bg-[var(--f1-red)] hover:text-white transition-colors";
+
+  const navLink = ({ href, label }, onClick) => (
+    <Link
+      key={href}
+      href={href}
+      onClick={onClick}
+      aria-current={isActive(href) ? "page" : undefined}
+      className={linkClass(isActive(href))}
+    >
+      {label}
+    </Link>
+  );
 
   return (
     <nav
@@ -54,27 +74,25 @@ export default function Header() {
       <div className="hidden md:flex items-center gap-4">
         {/* Gauche : logo */}
         <div className="flex-1 flex items-center">
-          <NavLink
-            to="/"
+          <Link
+            href="/"
             className="flex items-center gap-2 font-black text-lg tracking-tight"
           >
-            <img src={imgUrl} alt="Logo F1 Tracker" className="h-4 w-auto" />
-          </NavLink>
+            <Image
+              src="/img/tracker.webp"
+              alt="Logo F1 Tracker"
+              width={382}
+              height={24}
+              priority
+              className="h-4 w-auto"
+            />
+          </Link>
         </div>
 
         {/* Centre : navigation + (panier / mes commandes si connecté) */}
         <div className="flex justify-center items-center gap-1">
-          {NAV_LINKS.map(({ to, label }) => (
-            <NavLink key={to} to={to} className={linkClass}>
-              {label}
-            </NavLink>
-          ))}
-          {user &&
-            authLinks.map(({ to, label }) => (
-              <NavLink key={to} to={to} className={linkClass}>
-                {label}
-              </NavLink>
-            ))}
+          {NAV_LINKS.map((link) => navLink(link))}
+          {user && authLinks.map((link) => navLink(link))}
         </div>
 
         {/* Droite : connexion / inscription (ou déconnexion) */}
@@ -84,11 +102,7 @@ export default function Header() {
               Déconnexion
             </button>
           ) : (
-            authLinks.map(({ to, label }) => (
-              <NavLink key={to} to={to} className={linkClass}>
-                {label}
-              </NavLink>
-            ))
+            authLinks.map((link) => navLink(link))
           )}
         </div>
       </div>
@@ -102,6 +116,7 @@ export default function Header() {
           onClick={() => setMenuOpen((prev) => !prev)}
           className="text-2xl text-white focus:outline-none"
           aria-label="Menu"
+          aria-expanded={menuOpen}
         >
           {menuOpen ? "✕" : "☰"}
         </button>
@@ -109,11 +124,7 @@ export default function Header() {
 
       {menuOpen && (
         <div className="md:hidden flex flex-col items-start gap-2 mt-3 px-2 py-3 border-t border-white/10">
-          {allLinks.map(({ to, label }) => (
-            <NavLink key={to} to={to} className={linkClass} onClick={closeMenu}>
-              {label}
-            </NavLink>
-          ))}
+          {allLinks.map((link) => navLink(link, closeMenu))}
           {user && (
             <button onClick={handleLogout} className={`mt-1 ${logoutClass}`}>
               Déconnexion

@@ -1,33 +1,23 @@
-import { useEffect, useState } from "react";
+"use client";
+
+import { useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { useAuth } from "../../../context/AuthContext";
 import SearchBar from "../../ui/SearchBar";
+import PageHeading from "../../ui/PageHeading";
+import { ErrorMessage } from "../../ui/DataMessage";
 
-export default function Shop() {
+// Le catalogue est chargé côté serveur (src/app/shop/page.jsx) pour être
+// référencé ; l'ajout au panier reste une action du navigateur.
+export default function Shop({ products, error }) {
   const { user } = useAuth();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [addingId, setAddingId] = useState(null);
+  const [addError, setAddError] = useState(null);
   const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    async function fetchProducts() {
-      const { data, error } = await supabase
-        .from("products")
-        .select("id, libelle, prix");
-
-      if (error) setError(error.message);
-      else setProducts(data);
-
-      setLoading(false);
-    }
-
-    fetchProducts();
-  }, []);
 
   async function addToCart(productId) {
     setAddingId(productId);
+    setAddError(null);
 
     try {
       const {
@@ -62,17 +52,13 @@ export default function Shop() {
       if (rpcError) throw rpcError;
     } catch (err) {
       console.error("Ajout au panier impossible :", err);
-      setError(err.message ?? "Impossible d'ajouter le produit au panier.");
+      setAddError(err.message ?? "Impossible d'ajouter le produit au panier.");
     } finally {
       setAddingId(null);
     }
   }
 
-  if (loading)
-    return <p className="text-slate-100 text-center mt-10">Chargement...</p>;
-
-  if (error)
-    return <p className="text-red-400 text-center mt-10">Erreur : {error}</p>;
+  if (error) return <ErrorMessage />;
 
   const filteredProducts = products.filter((product) =>
     product.libelle.toLowerCase().includes(search.toLowerCase()),
@@ -80,11 +66,7 @@ export default function Shop() {
 
   return (
     <div className="max-w-6xl mx-auto mt-10 px-4 f1-fade-up">
-      <div className="f1-section-head">
-        <p className="f1-eyebrow">Formula 1</p>
-        <h1 className="f1-title text-4xl md:text-6xl mb-4">Boutique</h1>
-        <div className="f1-accent-line max-w-xs mx-auto" />
-      </div>
+      <PageHeading>Boutique</PageHeading>
 
       <div className="max-w-md mx-auto mb-8">
         <SearchBar
@@ -93,6 +75,12 @@ export default function Shop() {
           placeholder="Rechercher un produit..."
         />
       </div>
+
+      {addError && (
+        <p role="alert" className="text-red-400 text-center mb-6">
+          Erreur : {addError}
+        </p>
+      )}
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredProducts.map((product) => (
