@@ -8,8 +8,8 @@ const { mockNavigate, mockSignUp, mockRpc } = vi.hoisted(() => ({
   mockRpc: vi.fn(),
 }));
 
-vi.mock("react-router-dom", () => ({
-  useNavigate: () => mockNavigate,
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: mockNavigate }),
 }));
 
 vi.mock("../../lib/supabase", () => ({

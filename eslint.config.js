@@ -4,9 +4,9 @@ import pluginReact from "eslint-plugin-react";
 import babelParser from "@babel/eslint-parser";
 
 export default [
-  // dist/ = bundle de build ; supabase/functions = code Deno (runtime distinct,
+  // .next/ et dist/ = builds ; supabase/functions = code Deno (runtime distinct,
   // typé TS) linté séparément. On les exclut du lint front-end.
-  { ignores: ["dist/**", "coverage/**", "supabase/functions/**", "*.config.*"] },
+  { ignores: [".next/**", "dist/**", "coverage/**", "supabase/functions/**", "*.config.*", "next-env.d.ts"] },
   js.configs.recommended,
   {
     files: ["**/*.{js,mjs,cjs,jsx}"],
@@ -19,7 +19,8 @@ export default [
           presets: ["@babel/preset-react"],
         },
       },
-      globals: globals.browser,
+      // Composants serveur (process.env) et client (window) dans le même projet.
+      globals: { ...globals.browser, ...globals.node },
     },
     settings: {
       react: { version: "detect" },

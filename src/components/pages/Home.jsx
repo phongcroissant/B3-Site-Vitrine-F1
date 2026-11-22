@@ -1,5 +1,5 @@
-import { useFetch } from "../../hooks/useFetch";
 import ResultTable from "../ui/ResultTable";
+import { ErrorMessage, EmptyMessage } from "../ui/DataMessage";
 
 const columns = [
   { header: "Position", render: (r) => r.position },
@@ -11,25 +11,19 @@ const columns = [
   { header: "Points", render: (r) => r.points },
 ];
 
-export default function Home() {
-  const { loading, error, data } = useFetch(
-    "https://api.jolpi.ca/ergast/f1/current/last/results/",
-  );
-
-  const race = data?.MRData.RaceTable.Races[0];
+// Composant d'affichage : les données sont chargées côté serveur par
+// src/app/page.jsx puis passées en props (rendu SSR / ISR).
+export default function Home({ race, error }) {
   const results = race?.Results;
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Une erreur est survenue</p>;
-  if (!results || results.length === 0) return <p>Aucune donnée</p>;
+  if (error) return <ErrorMessage />;
+  if (!results || results.length === 0) return <EmptyMessage />;
 
   return (
     <div className="max-w-4xl mx-auto mt-10 px-4 f1-fade-up">
       <div className="f1-section-head">
-        <p className="f1-eyebrow">Formula 1</p>
-        <h2 className="f1-title text-4xl md:text-6xl mb-4">
-          {race.raceName}
-        </h2>
+        <p className="f1-eyebrow">Formula 1 · Dernier Grand Prix</p>
+        <h1 className="f1-title text-4xl md:text-6xl mb-4">{race.raceName}</h1>
         <div className="f1-accent-line max-w-xs mx-auto" />
       </div>
       <div className="f1-card p-4 md:p-6">
