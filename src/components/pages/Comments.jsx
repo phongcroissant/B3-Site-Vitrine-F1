@@ -1,6 +1,8 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
 
 export default function CommentSection({ idRace }) {
@@ -64,7 +66,7 @@ export default function CommentSection({ idRace }) {
         </form>
       ) : (
         <p className="text-sm text-gray-500 mb-6">
-          <Link to="/login" className="underline">
+          <Link href="/login" className="underline">
             Connectez-vous
           </Link>{" "}
           pour laisser un commentaire.

@@ -1,5 +1,5 @@
-import { useFetch } from "../../../hooks/useFetch";
 import ResultTable from "../../ui/ResultTable";
+import { ErrorMessage, EmptyMessage } from "../../ui/DataMessage";
 
 const columns = [
   { header: "Position", render: (r) => r.position },
@@ -7,17 +7,10 @@ const columns = [
   { header: "Points", render: (r) => r.points },
 ];
 
-export default function ConstructorsStanding() {
-  const { loading, error, data } = useFetch(
-    "https://api.jolpi.ca/ergast/f1/current/constructorStandings.json",
-  );
-
-  const standings =
-    data?.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Une erreur est survenue</p>;
-  if (!standings || standings.length === 0) return <p>Aucune donnée</p>;
+// Classement chargé côté serveur (src/app/standings/constructorsStanding/page.jsx).
+export default function ConstructorsStanding({ standings, error }) {
+  if (error) return <ErrorMessage />;
+  if (!standings || standings.length === 0) return <EmptyMessage />;
 
   return (
     <div className="max-w-3xl mx-auto mt-10 px-4">

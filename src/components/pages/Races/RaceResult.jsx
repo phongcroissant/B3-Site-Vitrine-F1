@@ -1,7 +1,7 @@
-import { useParams, Link } from "react-router-dom";
-import { useFetch } from "../../../hooks/useFetch";
+import Link from "next/link";
 import CommentSection from "../Comments";
 import ResultTable from "../../ui/ResultTable";
+import { ErrorMessage, EmptyMessage } from "../../ui/DataMessage";
 
 const columns = [
   { header: "Position", render: (r) => r.position },
@@ -13,23 +13,20 @@ const columns = [
   { header: "Points", render: (r) => r.points },
 ];
 
-export default function RaceResult() {
-  const { round } = useParams();
-  const { loading, error, data } = useFetch(
-    `https://api.jolpi.ca/ergast/f1/current/${round}/results/`,
-  );
-
-  const race = data?.MRData.RaceTable.Races[0];
+// Résultats chargés côté serveur (src/app/raceResult/[round]/page.jsx) ;
+// seuls les commentaires sont gérés dans le navigateur.
+export default function RaceResult({ race, error }) {
   const results = race?.Results;
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Une erreur est survenue</p>;
-  if (!results || results.length === 0) return <p>Aucune donnée</p>;
+  if (error) return <ErrorMessage />;
+  if (!results || results.length === 0) return <EmptyMessage />;
 
   return (
     <div className="max-w-4xl mx-auto mt-10 px-4">
-      <Link to={`/circuit`}>Retour</Link>
-      <h2 className="text-2xl font-bold mb-6 text-center">{race.raceName}</h2>
+      <Link href="/circuit" className="f1-link">
+        ← Retour aux circuits
+      </Link>
+      <h1 className="text-2xl font-bold mb-6 text-center">{race.raceName}</h1>
       <ResultTable
         columns={columns}
         rows={results}

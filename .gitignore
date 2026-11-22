@@ -7,12 +7,33 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dépendances et builds
 node_modules
 dist
 dist-ssr
+.next
+/out/
+next-env.d.ts
+*.tsbuildinfo
 *.local
 
-# Editor directories and files
+# Vercel
+.vercel
+
+# Variables d'environnement (toutes, sauf le modèle)
+.env*
+!.env.example
+
+# Supabase CLI (fichiers locaux générés)
+supabase/.temp/
+supabase/.branches/
+
+# Tests
+coverage/
+test-results/
+playwright-report/
+
+# Éditeurs et système
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,8 +43,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.env
-coverage/
 .claude/
-test-results/
-playwright-report/
